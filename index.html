@@ -1,0 +1,1190 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Numbers by Ear</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#E4E9F0; --surface:#F6F8FB; --ink:#14213D; --muted:#56627A; --line:#C6CFDC;
+  --plate:#1D3D8F; --frame:#2F7A5B; --ok:#2F7A5B; --bad:#C2362B; --on:#fff; --on-fill:#fff;
+  color-scheme:light; box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0D1524; --surface:#16213A; --ink:#E7ECF4; --muted:#9AA6BD; --line:#2A3858;
+    --plate:#2549A8; --frame:#3C9A72; --ok:#4FBF8B; --bad:#FF6B5E; --on-fill:#0D1524; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"],:root.t-dark,:root.t-midnight{
+  --bg:#0D1524; --surface:#16213A; --ink:#E7ECF4; --muted:#9AA6BD; --line:#2A3858;
+  --plate:#2549A8; --frame:#3C9A72; --ok:#4FBF8B; --bad:#FF6B5E; --on-fill:#0D1524; color-scheme:dark;
+}
+/* Settings › Theme: a t-* class on <html> beats the phone's light/dark mode (Auto = no class) */
+:root.t-light{
+  --bg:#E4E9F0; --surface:#F6F8FB; --ink:#14213D; --muted:#56627A; --line:#C6CFDC;
+  --plate:#1D3D8F; --frame:#2F7A5B; --ok:#2F7A5B; --bad:#C2362B; --on-fill:#fff; color-scheme:light;
+}
+:root.t-midnight{--bg:#000; --surface:#0E0E10; --line:#26262B}
+:root.t-contrast{
+  --bg:#000; --surface:#111; --ink:#fff; --muted:#E0E0E0; --line:#fff;
+  --plate:#FFD400; --frame:#FFD400; --ok:#3DDC84; --bad:#FF6B6B; --on:#000; --on-fill:#000; color-scheme:dark;
+}
+:root.t-tricolore{
+  --bg:#fff; --surface:#F3F3FA; --ink:#000091; --muted:#55597A; --line:#CACAFB;
+  --plate:#000091; --frame:#000091; --ok:#18753C; --bad:#E1000F; --on-fill:#fff; color-scheme:light;
+}
+:root.t-cafe{
+  --bg:#F3EAD9; --surface:#FBF6EC; --ink:#3B2A1E; --muted:#6F5A47; --line:#DCCBB0;
+  --plate:#6B3E26; --frame:#8A5A3B; --ok:#44702F; --bad:#B23A2A; --on-fill:#fff; color-scheme:light;
+}
+.t-tricolore .btn.primary{background:var(--bad);border-color:var(--bad)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.5 Barlow,"Segoe UI",system-ui,sans-serif}
+.wrap{max-width:560px;margin:0 auto;padding:28px 20px 56px}
+h1,.cond{font-family:"Barlow Condensed","Arial Narrow",system-ui,sans-serif}
+h1{font-weight:700;font-size:2.8rem;line-height:1;margin:0 0 6px;letter-spacing:-.01em}
+.lede{color:var(--muted);margin:0 0 28px;max-width:46ch}
+fieldset{border:0;padding:0;margin:0 0 22px;min-width:0}
+legend{font-weight:600;padding:0;margin-bottom:8px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{position:relative}
+.chip input{position:absolute;opacity:0;pointer-events:none}
+.chip span{display:block;padding:7px 14px;border:1.5px solid var(--line);border-radius:999px;background:var(--surface);cursor:pointer;user-select:none}
+.chip input:checked+span{background:var(--plate);border-color:var(--plate);color:var(--on)}
+.chip input:focus-visible+span{outline:3px solid var(--frame);outline-offset:2px}
+.hint{color:var(--muted);margin:10px 0 0;min-height:1.5em}
+select{font:inherit;padding:8px 10px;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);max-width:100%}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.btn{font:600 1rem Barlow,system-ui,sans-serif;padding:11px 18px;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.btn.primary{background:var(--plate);border-color:var(--plate);color:var(--on)}
+.btn.big{font-size:1.15rem;padding:14px 28px}
+.head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.icon-btn{flex:none;width:44px;height:44px;display:grid;place-items:center;border-radius:50%;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.icon-btn:focus-visible{outline:3px solid var(--frame);outline-offset:2px}
+.btn:focus-visible,select:focus-visible{outline:3px solid var(--frame);outline-offset:2px}
+.note{color:var(--muted);font-size:.95rem}
+.warn{background:var(--surface);border-inline-start:4px solid var(--bad);padding:10px 14px;border-radius:6px;margin:0 0 20px}
+.warn.speechMsg{margin:10px 0 0}
+.vout{white-space:pre-wrap;overflow-wrap:anywhere;font:.95rem/1.5 Barlow,system-ui,sans-serif;background:var(--surface);border-radius:8px;padding:10px 14px;margin:10px 0 0}
+/* numbers, dates and prices always read left to right, also on the Hebrew (right-to-left) screens */
+.num,.choice,.list .d,#prog{direction:ltr;unicode-bidi:isolate}
+
+/* play */
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.top .cond{font-size:1.25rem;font-weight:500;color:var(--muted);font-variant-numeric:tabular-nums}
+.top .score{color:var(--ink);font-weight:700}
+.top .lead{display:flex;align-items:center;gap:12px}
+.top .icon-btn{width:40px;height:40px}
+.top{gap:8px 12px;flex-wrap:wrap}
+.btn.small{padding:7px 12px;font-size:.95rem}
+.track{display:flex;gap:4px;margin-bottom:22px}
+.seg{flex:1;height:6px;border-radius:3px;background:var(--line)}
+.seg.cur{background:var(--plate)}
+.seg.ok{background:var(--ok)}
+.seg.bad{background:var(--bad)}
+.plaque{
+  margin:0 auto 22px;background:var(--plate);color:var(--on);
+  border:8px solid var(--frame);border-radius:20px;
+  box-shadow:inset 0 0 0 4px var(--plate),inset 0 0 0 6px var(--on);
+  min-height:156px;display:grid;place-items:center;padding:20px 22px;text-align:center;
+  transition:border-color .2s;
+}
+.plaque.ok{border-color:var(--ok)}
+.plaque.bad{border-color:var(--bad)}
+.num{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight:700;font-size:clamp(2.6rem,12vw,4.4rem);line-height:1;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.plaque.listening .num{animation:pulse 1s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.35}}
+@media (prefers-reduced-motion:reduce){.plaque.listening .num{animation:none}}
+.answer{display:flex;gap:8px}
+.answer input{flex:1;min-width:0;font:600 1.7rem "Barlow Condensed",sans-serif;padding:8px 14px;border-radius:10px;border:2px solid var(--line);background:var(--surface);color:var(--ink);font-variant-numeric:tabular-nums}
+#mic.on,#micTest.on{border-color:var(--frame);background:var(--frame);color:var(--on-fill)}
+.choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.choice{font:700 1.6rem "Barlow Condensed","Arial Narrow",sans-serif;font-variant-numeric:tabular-nums;padding:14px 10px;border-radius:12px;border:2px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;overflow-wrap:anywhere}
+.choice:focus-visible{outline:3px solid var(--frame);outline-offset:2px}
+.choice.ok{background:var(--ok);border-color:var(--ok);color:var(--on-fill)}
+.choice.bad{background:var(--bad);border-color:var(--bad);color:var(--on-fill)}
+.choice:disabled{cursor:default}
+.choice:disabled:not(.ok):not(.bad){opacity:.55}
+.answer input:focus{outline:none;border-color:var(--plate)}
+.under{display:flex;justify-content:space-between;align-items:center;margin-top:10px;gap:10px;flex-wrap:wrap}
+.clock{font-family:"Barlow Condensed",sans-serif;font-size:1.3rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.fb{margin-top:20px;min-height:96px}
+.fb .verdict{font-weight:600;font-size:1.1rem;margin:0}
+.fb .verdict.ok{color:var(--ok)}
+.fb .verdict.bad{color:var(--bad)}
+.fb .words{font-size:1.15rem;margin:4px 0 0}
+.fb .you{color:var(--muted);margin:4px 0 0}
+.fb .btn{margin-top:12px}
+
+/* done */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:8px 0 10px}
+.stat{background:var(--surface);border-radius:12px;padding:12px 14px}
+.stat b{display:block;font-family:"Barlow Condensed",sans-serif;font-size:2.1rem;line-height:1.05;font-variant-numeric:tabular-nums}
+.stat span{color:var(--muted);font-size:.9rem}
+.best{margin:0 0 22px;color:var(--muted)}
+.list{list-style:none;padding:0;margin:0 0 24px;border-top:1px solid var(--line)}
+.list li{display:grid;grid-template-columns:1.6rem 1fr auto;gap:4px 10px;padding:10px 0;border-bottom:1px solid var(--line);align-items:baseline}
+.list .mark{font-weight:700}
+.list .mark.ok{color:var(--ok)} .list .mark.bad{color:var(--bad)}
+.list .d{font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:1.2rem;font-variant-numeric:tabular-nums}
+.list .w{grid-column:2/4;color:var(--muted)}
+.list .t{color:var(--muted);font-variant-numeric:tabular-nums}
+.list .y{color:var(--bad)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<section id="setup">
+  <div class="head"><h1>Numbers by Ear</h1><button class="icon-btn" id="gear" type="button" aria-label="Settings" title="Settings" data-ta="aria-label:settings,title:settings"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button></div>
+  <p class="lede" data-t="lede">Hear a number in English, type it in digits as fast as you can. The quicker you answer, the more points you get.</p>
+
+  <div id="noSpeech" class="warn" hidden data-t="noSpeech"><strong>Open this page in Chrome to hear the numbers.</strong> This view can’t play speech, so the round can’t start here. In Chrome, use ⋮ › Add to Home screen to get a one-tap shortcut.</div>
+
+  <div id="noVoice" class="warn" hidden data-t="noVoice">No English voice was found on this device. On Android, go to Settings › General management › Text-to-speech, tap the gear next to the engine, then Install voice data › English. On iPhone, Settings › Accessibility › Spoken Content › Voices › English.</div>
+
+  <fieldset>
+    <legend data-t="practise">What to practise</legend>
+    <div class="chips" id="modes"></div>
+    <p class="hint" id="hint" aria-live="polite"></p>
+  </fieldset>
+
+  <fieldset>
+    <legend data-t="answerBy">Answer by</legend>
+    <div class="chips">
+      <label class="chip"><input type="radio" name="style" value="type" checked><span data-t="sTyping">Typing it</span></label>
+      <label class="chip"><input type="radio" name="style" value="choose"><span data-t="sChoices">Picking from choices</span></label>
+      <label class="chip"><input type="radio" name="style" value="speak"><span data-t="sSpeak">Saying it out loud</span></label>
+      <label class="chip"><input type="radio" name="style" value="english"><span data-t="sEnglish">Saying it in English</span></label>
+    </div>
+    <p class="hint" id="answerHint" aria-live="polite"></p>
+    <div id="chooseOpts" hidden>
+      <p class="note" id="nchoicesLbl" style="margin:10px 0 8px" data-t="nchoices">How many choices, including the right one</p>
+      <div class="chips" role="radiogroup" aria-labelledby="nchoicesLbl">
+        <label class="chip"><input type="radio" name="nchoices" value="3"><span>3</span></label>
+        <label class="chip"><input type="radio" name="nchoices" value="4" checked><span>4</span></label>
+        <label class="chip"><input type="radio" name="nchoices" value="5"><span>5</span></label>
+        <label class="chip"><input type="radio" name="nchoices" value="6"><span>6</span></label>
+      </div>
+    </div>
+    <div id="micOpts" hidden>
+      <div id="sayLangOpts">
+      <p class="note" id="sayLangLbl" style="margin:10px 0 8px" data-t="sayLang">Say the numbers in</p>
+      <div class="chips" role="radiogroup" aria-labelledby="sayLangLbl">
+        <label class="chip"><input type="radio" name="spoken" value="en" checked><span data-t="sayEn">English</span></label>
+        <label class="chip"><input type="radio" name="spoken" value="he"><span data-t="sayHe">Hebrew</span></label>
+        <label class="chip"><input type="radio" name="spoken" value="fr"><span data-t="sayFr">French</span></label>
+        <label class="chip"><input type="radio" name="spoken" value="uk"><span data-t="sayUk">Ukrainian</span></label>
+      </div>
+      </div>
+      <div class="row" style="margin-top:10px">
+        <button class="btn" id="micTest" type="button" data-t="micTestBtn">Test microphone</button>
+      </div>
+      <p class="hint" id="micStatus" aria-live="polite"></p>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend data-t="roundLen">Round length</legend>
+    <div class="chips">
+      <label class="chip"><input type="radio" name="len" value="10" checked><span data-t="len10">10 numbers</span></label>
+      <label class="chip"><input type="radio" name="len" value="20"><span data-t="len20">20 numbers</span></label>
+      <label class="chip"><input type="radio" name="len" value="30"><span data-t="len30">30 numbers</span></label>
+    </div>
+  </fieldset>
+
+
+  <div class="row" style="margin-top:8px">
+    <button class="btn primary big" id="start" type="button" data-t="start">Start round</button>
+    <span class="note" id="bestSetup"></span>
+  </div>
+</section>
+
+<section id="prefs" hidden>
+  <h1 data-t="settings">Settings</h1>
+  <p class="lede" data-t="prefsLede">These apply to every round.</p>
+
+  <fieldset>
+    <legend>Language · שפה · Langue · Мова</legend>
+    <div class="chips">
+      <label class="chip"><input type="radio" name="lang" value="en" checked><span lang="en">English</span></label>
+      <label class="chip"><input type="radio" name="lang" value="he"><span lang="he">עברית</span></label>
+      <label class="chip"><input type="radio" name="lang" value="fr"><span lang="en">Français</span></label>
+      <label class="chip"><input type="radio" name="lang" value="uk"><span lang="uk">Українська</span></label>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend data-t="accentLeg">English</legend>
+    <div class="chips">
+      <label class="chip"><input type="radio" name="accent" value="us" checked><span data-t="acUS">American</span></label>
+      <label class="chip"><input type="radio" name="accent" value="gb"><span data-t="acUK">British</span></label>
+    </div>
+    <p class="hint" data-t="accentHint">Changes the voice, the date order (7/14 or 14/7), dollars or pounds, and how phone numbers are said.</p>
+  </fieldset>
+
+  <fieldset>
+    <legend data-t="theme">Theme</legend>
+    <div class="chips">
+      <label class="chip"><input type="radio" name="theme" value="auto" checked><span data-t="thAuto">Auto</span></label>
+      <label class="chip"><input type="radio" name="theme" value="light"><span data-t="thLight">Light</span></label>
+      <label class="chip"><input type="radio" name="theme" value="dark"><span data-t="thDark">Dark</span></label>
+      <label class="chip"><input type="radio" name="theme" value="contrast"><span data-t="thContrast">High contrast</span></label>
+      <label class="chip"><input type="radio" name="theme" value="tricolore"><span data-t="thTricolore">Red, white and blue</span></label>
+      <label class="chip"><input type="radio" name="theme" value="cafe"><span data-t="thCafe">Café</span></label>
+      <label class="chip"><input type="radio" name="theme" value="midnight"><span data-t="thMidnight">Midnight black</span></label>
+    </div>
+    <p class="hint" data-t="themeHint">Auto follows your phone’s light or dark mode.</p>
+  </fieldset>
+
+  <fieldset>
+    <legend data-t="speed">Speaking speed</legend>
+    <div class="chips">
+      <label class="chip"><input type="radio" name="speed" value="0.8"><span data-t="spSlow">Slower</span></label>
+      <label class="chip"><input type="radio" name="speed" value="1" checked><span data-t="spNormal">Normal</span></label>
+      <label class="chip"><input type="radio" name="speed" value="1.25"><span data-t="spFast">Fast</span></label>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend data-t="pauseLeg">Pause after a correct answer</legend>
+    <div class="chips">
+      <label class="chip"><input type="radio" name="pause" value="0.15"><span data-t="pNone">None</span></label>
+      <label class="chip"><input type="radio" name="pause" value="0.5" checked><span data-t="pShort">Short</span></label>
+      <label class="chip"><input type="radio" name="pause" value="1"><span data-t="pMedium">Medium</span></label>
+      <label class="chip"><input type="radio" name="pause" value="1.5"><span data-t="pLong">Long</span></label>
+    </div>
+  </fieldset>
+
+  <fieldset id="voiceSet">
+    <legend data-t="voiceLeg">Voice</legend>
+    <div class="row">
+      <select id="voice" aria-label="English voice" data-ta="aria-label:voiceSel"></select>
+      <button class="btn" id="test" type="button" data-t="testVoice">Test voice</button>
+    </div>
+    <p class="warn speechMsg" role="status" hidden></p>
+  </fieldset>
+
+  <fieldset>
+    <legend data-t="vcLeg">Voice check</legend>
+    <p class="hint" style="margin:0 0 10px" data-t="vcHint">No sound? This plays “one, two, three” several ways and shows which ones work. Take a screenshot of the result.</p>
+    <button class="btn" id="vcheck" type="button" data-t="vcRun">Run voice check</button>
+    <pre class="vout" id="vcheckOut" role="status" hidden></pre>
+  </fieldset>
+
+  <button class="btn primary big" id="prefsDone" type="button" data-t="doneBtn">Done</button>
+</section>
+
+<section id="play" hidden>
+  <div class="top">
+    <span class="cond lead"><button class="icon-btn" id="leave" type="button" aria-label="Leave round" title="Leave round" data-ta="aria-label:leave,title:leave"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button><span id="prog">1 / 10</span></span>
+    <span class="cond lead"><span><span class="score" id="score">0</span> <span data-t="pts">pts</span></span><button class="btn small" id="quit" type="button" data-t="endRound">End round</button></span>
+  </div>
+  <div class="track" id="track"></div>
+
+  <div class="plaque" id="plaque"><div class="num" id="num">?</div></div>
+
+  <form class="answer" id="form" autocomplete="off">
+    <input id="input" type="text" dir="auto" inputmode="numeric" placeholder="Type the number" aria-label="Your answer" enterkeyhint="go" data-ta="placeholder:typeNum,aria-label:yourAnswer">
+    <button class="btn primary" type="submit" data-t="check">Check</button>
+  </form>
+  <div class="choices" id="choices" hidden></div>
+  <div class="under">
+    <span class="clock" id="clock">0.0 s</span>
+    <span class="row">
+      <button class="btn" id="mic" type="button" hidden data-t="tapSpeak">Tap to speak</button>
+      <button class="btn" id="replay" type="button" data-t="hearAgain">Hear again</button>
+      <button class="btn" id="skip" type="button" data-t="skip">Skip</button>
+    </span>
+  </div>
+  <p class="warn speechMsg" role="status" hidden></p>
+  <p class="note" id="playNote" data-t="note_type">Enter checks your answer. Shift+Enter plays the number again.</p>
+
+  <p class="note" id="micMsg" aria-live="polite"></p>
+  <div class="fb" id="fb" aria-live="polite"></div>
+</section>
+
+<section id="done" hidden>
+  <h1 data-t="roundOver">Round over</h1>
+  <div class="stats">
+    <div class="stat"><b id="sScore">0</b><span data-t="stPoints">points</span></div>
+    <div class="stat"><b id="sAcc">0%</b><span data-t="stCorrect">correct</span></div>
+    <div class="stat"><b id="sAvg">–</b><span data-t="stAvg">avg seconds</span></div>
+  </div>
+  <p class="best" id="sBest"></p>
+  <ul class="list" id="list"></ul>
+  <div class="row">
+    <button class="btn primary" id="again" type="button" data-t="again">Play again</button>
+    <button class="btn" id="misses" type="button" data-t="missesBtn">Practise my misses</button>
+    <button class="btn" id="settings" type="button" data-t="mainScreen">Main screen</button>
+  </div>
+</section>
+
+</div>
+<script>
+/* ---------- English number words (US or British, Settings › English) ---------- */
+const ONES=['zero','one','two','three','four','five','six','seven','eight','nine','ten','eleven','twelve','thirteen','fourteen','fifteen','sixteen','seventeen','eighteen','nineteen'];
+const TENS=['','','twenty','thirty','forty','fifty','sixty','seventy','eighty','ninety'];
+const MONTHS_EN=['january','february','march','april','may','june','july','august','september','october','november','december'];
+const MONTHS=['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+const MONTHS_HE=['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
+const MONTHS_UK=['січ','лют','берез','квіт','трав','черв','лип','серп','верес','жовт','листопад','груд'];  // stems: match both липень and липня
+const GB=()=>val('accent')==='gb';
+const accLang=()=>GB()?'en-GB':'en-US';
+const cap=s=>s[0].toUpperCase()+s.slice(1);
+function u100(n){return n<20?ONES[n]:TENS[Math.floor(n/10)]+(n%10?'-'+ONES[n%10]:'')}
+function u1000(n){const h=Math.floor(n/100),r=n%100;return [h?ONES[h]+' hundred':'',r?(h&&GB()?'and ':'')+u100(r):''].filter(Boolean).join(' ')}  // British: "two hundred and five"
+function en(n){
+  if(n===0)return 'zero';
+  const m=Math.floor(n/1e6),k=Math.floor(n/1000)%1000,r=n%1000,p=[];
+  if(m)p.push(u1000(m)+' million');
+  if(k)p.push(u1000(k)+' thousand');
+  if(r)p.push((p.length&&r<100&&GB()?'and ':'')+u1000(r));  // British: "two thousand and five"
+  return p.join(' ');
+}
+const ORD={one:'first',two:'second',three:'third',five:'fifth',eight:'eighth',nine:'ninth',twelve:'twelfth'};
+const ord=n=>en(n).replace(/\w+$/,w=>ORD[w]||(w.endsWith('y')?w.slice(0,-1)+'ieth':w+'th'));  // 21 → twenty-first, 30 → thirtieth
+function year(y){  // 1985 nineteen eighty-five, 1905 nineteen oh five, 1900 nineteen hundred, 2005 two thousand (and) five, 2024 twenty twenty-four
+  const c=Math.floor(y/100),r=y%100;
+  if(y%1000===0||(y>2000&&y<2010))return en(y);
+  if(r===0)return en(c)+' hundred';
+  return en(c)+(r<10?' oh ':' ')+en(r);
+}
+
+/* ---------- helpers ---------- */
+const $=id=>document.getElementById(id);
+const R=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const pad=n=>String(n).padStart(2,'0');
+const grp=n=>String(n).replace(/\B(?=(\d{3})+(?!\d))/g,',');
+const digits=s=>s.replace(/\D/g,'');
+const plain=s=>s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+// keys get an "nbe:" prefix: on GitHub Pages this game shares its address (and so its saved data) with \u00c0 l'oreille
+const store={get(k){try{return localStorage.getItem('nbe:'+k)}catch(e){return null}},set(k,v){try{localStorage.setItem('nbe:'+k,v)}catch(e){}}};
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+
+function confuse(n){
+  const out=[],add=x=>{if(x>=0&&x!==n&&!out.includes(x))out.push(x)};
+  const r=n%100,base=n-r,s=String(n),t=Math.floor(r/10),u=r%10;
+  if(r>=13&&r<=19)add(base+u*10);          // thirteen \u2192 thirty
+  if(r>=30&&u===0)add(base+t+10);          // forty \u2192 fourteen
+  if(r>=13&&r<=19){add(n+1);add(n-1)}
+  if(r>=20){add(n+10);add(n-10)}
+  if(t>=2&&u>=1&&t!==u)add(base+u*10+t);   // 47 \u2192 74
+  add(n+1);add(n-1);
+  for(let i=0;i<s.length-2;i++){const d=+s[i];for(const dd of[d+1,d-1]){if(dd<0||dd>9||(i===0&&dd===0))continue;add(+(s.slice(0,i)+dd+s.slice(i+1)))}}
+  return out;
+}
+function poolFor(n,min,max){
+  const c=shuffle(confuse(n).filter(x=>x>=min&&x<=max));
+  const rnd=[];for(let i=0;i<40;i++){const x=n+(Math.random()<.5?-1:1)*R(2,Math.max(5,Math.round(n*.1)));if(x>=min&&x<=max&&x!==n)rnd.push(x)}
+  return c.concat(rnd);
+}
+function intItem(n,say,o={}){
+  const w=say||en(n),fmt=o.fmt||grp,min=o.min??0,max=o.max??Infinity;
+  return{display:fmt(n),say:w,words:w,check:s=>digits(s)===String(n),alts:()=>poolFor(n,min,max).map(fmt)};
+}
+
+/* ---------- modes ---------- */
+/* labels and hints live in I18N (m_<key>, h_<key>); hints for dates, prices and phone depend on US or British English */
+const MODES={
+  small:{make:()=>intItem(R(0,20))},
+  teens:{make:()=>{const n=Math.random()<.5?R(13,19):R(3,9)*10;return intItem(n+(Math.random()<.3?R(1,9)*100:0))}},  // thirteen or thirty?
+  upto99:{make:()=>intItem(R(0,99))},
+  hundreds:{make:()=>intItem(R(100,999))},
+  thousands:{make:()=>{const d=R(4,6);return intItem(R(10**(d-1),10**d-1))}},
+  years:{make:()=>{const y=Math.random()<.85?R(1500,2099):R(1000,1499);return intItem(y,year(y),{fmt:String,min:1000,max:2099})}},
+  dates:{input:'text',make:()=>{
+    const gb=GB(),y=R(1600,2030),m=R(1,12),d=R(1,[31,28,31,30,31,30,31,31,30,31,30,31][m-1]),M=cap(MONTHS_EN[m-1]);
+    const w=gb?`the ${ord(d)} of ${M}, ${year(y)}`:`${M} ${ord(d)}, ${year(y)}`;
+    const fd=(dd,mm,yy)=>gb?`${pad(dd)}/${pad(mm)}/${yy}`:`${pad(mm)}/${pad(dd)}/${yy}`;  // US dates are month first
+    const alts=()=>{const a=[];
+      for(const x of poolFor(d,1,31).slice(0,4))a.push(fd(x,m,y));
+      for(const x of poolFor(y,1000,2099).slice(0,4))a.push(fd(d,m,x));
+      a.push(fd(d,m===12?11:m+1,y),fd(d,m===1?2:m-1,y));
+      return shuffle(a).concat(poolFor(y,1000,2099).map(x=>fd(d,m,x)));};
+    return{alts,display:fd(d,m,y),say:w,words:w,check:s=>{
+      let g=(s.match(/\d+/g)||[]).map(Number);  // read as day, month, year
+      if(g.length===2){const p=plain(s).replace('מרס','מרץ');let mi=MONTHS.findIndex(x=>p.includes(plain(x)));if(mi<0)mi=MONTHS_EN.findIndex(x=>p.includes(x));if(mi<0)mi=MONTHS_HE.findIndex(x=>p.includes(x));if(mi<0)mi=MONTHS_UK.findIndex(x=>p.includes(x));if(mi>=0)g=[g[0],mi+1,g[1]];}
+      else if(g.length===3&&!gb)g=[g[1],g[0],g[2]];  // US 07/14/1789
+      return g.length===3&&g[0]===d&&g[1]===m&&g[2]===y;}};
+  }},
+  prices:{input:'decimal',make:()=>{
+    const gb=GB(),e=Math.random()<.5?R(1,99):R(100,999),c=Math.random()<.25?0:R(1,99);
+    const w=gb?en(e)+(e>1?' pounds':' pound')+(c?' '+en(c):''):en(e)+(e>1?' dollars':' dollar')+(c?' and '+en(c)+(c>1?' cents':' cent'):'');  // "twelve pounds fifty", "twelve dollars and fifty cents"
+    const fp=(ee,cc)=>`${gb?'£':'$'}${grp(ee)}.${pad(cc)}`;
+    const alts=()=>shuffle(poolFor(e,1,999).slice(0,4).map(x=>fp(x,c)).concat(poolFor(c,0,99).slice(0,4).map(x=>fp(e,x)))).concat(poolFor(e,1,999).map(x=>fp(x,c)));
+    return{alts,display:fp(e,c),say:w,words:w,check:s=>{const x=parseFloat(s.replace(/[\s€$£]/g,'').replace(',','.'));return!isNaN(x)&&Math.round(x*100)===e*100+c}};
+  }},
+  phone:{make:()=>{
+    const gb=GB(),D=()=>R(0,9);
+    const d=gb?'07'+Array.from({length:9},D).join(''):''+R(2,9)+D()+D()+R(2,9)+Array.from({length:6},D).join('');  // UK mobile 07700 900123, US 555-123-4567
+    const groups=x=>gb?[x.slice(0,5),x.slice(5)]:[x.slice(0,3),x.slice(3,6),x.slice(6)];
+    const fmt=x=>groups(x).join(gb?' ':'-');
+    const z=c=>c==='0'?(gb?'oh':'zero'):ONES[+c];
+    const sayG=g=>{const w=[];for(let i=0;i<g.length;i++){if(gb&&g[i]===g[i+1]){w.push('double '+z(g[i]));i++}else w.push(z(g[i]))}return w.join(' ')};  // British: "double seven"
+    const w=groups(d).map(sayG).join(', ');
+    const alts=()=>{const a=[];for(let k=0;k<30;k++){const i=R(3,d.length-1);a.push(fmt(d.slice(0,i)+(+d[i]+R(1,9))%10+d.slice(i+1)))}return a};
+    return{alts,display:fmt(d),say:w,words:w,check:s=>digits(s)===d};
+  }},
+  mix:{input:'text',make:()=>{const k=pick(['teens','upto99','hundreds','thousands','years','dates','prices','phone']);const it=MODES[k].make();it.input=MODES[k].input;return it}}
+};
+const modesEl=$('modes');
+Object.keys(MODES).forEach((k,i)=>{
+  modesEl.insertAdjacentHTML('beforeend',`<label class="chip"><input type="radio" name="mode" value="${k}"${i===0?' checked':''}><span></span></label>`);
+});
+
+/* ---------- settings ---------- */
+const SRok=!!(window.SpeechRecognition||window.webkitSpeechRecognition);
+// false inside the Claude artifact view, which doesn't pass the microphone down to the page
+const micOK=document.featurePolicy?document.featurePolicy.allowsFeature('microphone'):window.self===window.top;
+const val=n=>document.querySelector(`input[name="${n}"]:checked`).value;
+function setVal(n,v){const el=document.querySelector(`input[name="${n}"][value="${v}"]`);if(el)el.checked=true}
+const spk=k=>k+({he:'He',fr:'Fr',uk:'Uk'}[val('spoken')]||'');  // text key for the spoken-answer language: ah_speak, ah_speakHe, ah_speakFr, ah_speakUk
+
+/* ---------- languages: English text stays in the HTML (data-t, data-ta); mode names, hints and messages built in code are in I18N.en; Hebrew, French and Ukrainian live here too ---------- */
+const I18N={en:{
+  m_small:'0 to 20',h_small:'The building blocks, from zero to twenty.',
+  m_teens:'Teens and tens',h_teens:'Thirteen or thirty? Fourteen or forty? Listen to the end of the word.',
+  m_upto99:'0 to 99',h_upto99:'Everything under a hundred.',
+  m_hundreds:'Hundreds',h_hundreds:'100 to 999.',
+  m_thousands:'Thousands',h_thousands:'1,000 to 999,999.',
+  m_years:'Years',h_years:'You’ll hear “nineteen eighty-five”. Type 1985.',
+  m_dates:'Full dates',h_dates:gb=>gb?'Day, month and year, day first. Type 14/07/1789 or 14 July 1789.':'Month, day and year, month first as in the US. Type 07/14/1789 or July 14 1789.',
+  m_prices:'Prices',h_prices:gb=>gb?'Pounds and pence. Type 12.50.':'Dollars and cents. Type 12.50.',
+  m_phone:'Phone numbers',h_phone:gb=>gb?'Said digit by digit, with “oh” for 0 and “double seven” for 77. Type all 11 digits.':'Said digit by digit: five five five, one two three… Type all 10 digits.',
+  m_mix:'Mix',h_mix:'A bit of everything.',
+  ah_type:'Type the number in digits, then tap Check.',
+  ah_choose:'Tap the number you hear.',
+  ah_nosr:'This browser can’t listen for answers, so you’ll type instead. Open the page in Chrome to answer by voice.',
+  ah_artifact:'Spoken answers don’t work when this page is opened as a Claude artifact, so you’ll type instead. To answer by voice, open it as a normal web page in Chrome.',
+  ah_speak:'The mic turns on after each number. Say it in English, like “nineteen eighty-five” or “July fourteenth”. You can still type if you prefer.',
+  ah_speakHe:'The mic turns on after each number. Say it in Hebrew, like “אלף תשע מאות שמונים וחמש” or “ארבעה עשר ביולי”. You can still type if you prefer.',
+  ah_speakFr:'The mic turns on after each number. Say it in French, like “mille neuf cent quatre-vingt-cinq” or “le quatorze juillet”. You can still type if you prefer.',
+  ah_speakUk:'The mic turns on after each number. Say it in Ukrainian, like “тисяча дев’ятсот вісімдесят п’ять” or “чотирнадцяте липня”. You can still type if you prefer.',
+  ah_english:'The number appears on screen. Say it in English when the mic turns on, like “seventy-seven”. You can also write it in English words.',
+  note_english:'Say the number in English, or write it in English words.',
+  typeEn:'Write it in English',tryAgain:'Try again.',
+  note_speak:'Say the number in English when the voice stops. You can still type if you prefer.',
+  note_speakHe:'Say the number in Hebrew when the voice stops. You can still type if you prefer.',
+  note_speakFr:'Say the number in French when the voice stops. You can still type if you prefer.',
+  note_speakUk:'Say the number in Ukrainian when the voice stops. You can still type if you prefer.',
+  micSay:'Say a number in English, like “seventy-two”.',
+  micSayHe:'Say a number in Hebrew, like “שבעים ושתיים”.',
+  micSayFr:'Say a number in French, like “soixante-douze”.',
+  micSayUk:'Say a number in Ukrainian, like “сімдесят два”.',
+  bestHere:b=>`Your best here: ${grp(b)} pts`,
+  force:'On Android, force stop Chrome (phone Settings › Apps › Chrome › Force stop), then reopen it.',
+  notAllowed:'Chrome blocked the sound. Tap Hear again or Test voice to play it.',
+  voiceFailed:(n,e)=>`The voice “${n}” failed (${e}), so the phone’s default English voice is used instead.`,
+  speechFailed:e=>`Speech failed (${e}). ${tr('force')} If that doesn’t help, pick another voice in Settings.`,
+  noStart:'No sound started. Check the media volume, then tap Hear again.',
+  vcHead:(b,n,f,g)=>`${b}: ${n} voices, ${f} English. Game voice: ${g}`,
+  vcDefault:'default',vcDevice:'on device',vcOnline:'online',vcNoSpeech:'This browser has no speech.',vcNoLang:'No language set',vcLang:'Language',vcChecking:'Checking…',
+  vcWorked:'worked',vcFailed:e=>`failed (${e})`,vcNoStart:'no sound started',vcNoEnd:'started, never finished',vcEndOnly:'finished (no start event)',vcNothing:'Nothing worked.',
+  note_choose:n=>`Tap the number you hear. On a keyboard, press 1 to ${n}.`,
+  sec:'s',
+  retryPick:'Not quite. Listen again and pick another.',
+  retryType:'Not quite. Listen again and try another answer.',
+  lateOk:'That’s it. No points this time, since it took more than one try.',
+  correct:(p,t,s)=>`Correct, <bdi>+${p}</bdi> points in ${t} s${s>1?` (streak of ${s})`:''}`,
+  skipped:'Skipped',notQuite:'Not quite',itWas:d=>`It was <bdi>${d}</bdi>`,
+  youTyped:v=>`You typed “<bdi>${v}</bdi>”`,youPicked:v=>`You picked “<bdi>${v}</bdi>”`,youSaid:v=>`You said “<bdi>${v}</bdi>”`,
+  nextNum:'Next number',listening:'Listening…',
+  micBlockedPlay:'Microphone access is blocked. Allow it for this page in Chrome, or choose Typing it on the main screen.',
+  notCaught:'Didn’t catch that. Tap to speak and try again.',
+  micBlocked:'Microphone is blocked for this page. In Chrome, go to ⋮ › Settings › Site settings › Microphone, allow this site, then tap Test microphone again.',
+  micOn:'✓ Microphone is on. Tap Test microphone to check it hears you.',
+  micPrompt:'Tap Test microphone and allow access when Chrome asks.',
+  micHearing:h=>`Hearing: “${h}”`,
+  micNoSpeech:'Didn’t hear anything. Check nothing is covering the mic and try again.',
+  micNoDevice:'No microphone was found. Check another app isn’t using it, then try again.',
+  micFail:e=>`The microphone test didn’t work (${e}). Try again.`,
+  micWorks:h=>`✓ Heard “${h}”. Your microphone works.`,
+  micStartFail:'Couldn’t start the microphone. Try again.',
+  newBest:(m,b)=>`New best for ${m}! Previous: ${grp(b)} pts.`,
+  firstBest:m=>`First score saved for ${m}.`,
+  yourBest:(m,b)=>`Your best for ${m}: ${grp(b)} pts.`
+},he:{
+  title:'Numbers by Ear: מספרים באנגלית לפי שמיעה',
+  settings:'הגדרות',
+  lede:'שמעו מספר באנגלית והקלידו אותו בספרות מהר ככל האפשר. ככל שתענו מהר יותר, תקבלו יותר נקודות.',
+  noSpeech:'<strong>פתחו את הדף ב-Chrome כדי לשמוע את המספרים.</strong> התצוגה הזו לא יכולה להשמיע דיבור, ולכן אי אפשר להתחיל כאן סבב. ב-Chrome, דרך ⋮ › "הוספה למסך הבית" אפשר ליצור קיצור דרך.',
+  noVoice:'לא נמצא במכשיר קול באנגלית. באנדרואיד: חפשו בהגדרות "טקסט לדיבור", הקישו על גלגל השיניים שליד המנוע ובחרו "התקנת נתוני קול" › אנגלית. באייפון: הגדרות › נגישות › תוכן מדובר › קולות › אנגלית.',
+  practise:'מה לתרגל',answerBy:'איך עונים',sTyping:'הקלדה',sChoices:'בחירה מתוך אפשרויות',sSpeak:'אמירה בקול',sEnglish:'אמירה באנגלית',
+  sayLang:'שפת הדיבור',sayEn:'אנגלית',sayHe:'עברית',sayFr:'צרפתית',sayUk:'אוקראינית',
+  nchoices:'כמה אפשרויות, כולל התשובה הנכונה',micTestBtn:'בדיקת מיקרופון',
+  roundLen:'אורך הסבב',len10:'10 מספרים',len20:'20 מספרים',len30:'30 מספרים',start:'התחלת סבב',
+  prefsLede:'ההגדרות חלות על כל הסבבים.',
+  accentLeg:'אנגלית',acUS:'אמריקאית',acUK:'בריטית',accentHint:'משנה את הקול, את סדר התאריך (7/14 או 14/7), דולרים או לירות שטרלינג, ואת אופן הקראת מספרי הטלפון.',
+  theme:'ערכת נושא',thAuto:'אוטומטי',thLight:'בהיר',thDark:'כהה',thContrast:'ניגודיות גבוהה',thTricolore:'אדום, לבן וכחול',thCafe:'בית קפה',thMidnight:'שחור חצות',
+  themeHint:'"אוטומטי" פועל לפי המצב הבהיר או הכהה של הטלפון.',
+  speed:'מהירות הדיבור',spSlow:'איטי יותר',spNormal:'רגיל',spFast:'מהיר',
+  pauseLeg:'הפסקה אחרי תשובה נכונה',pNone:'בלי',pShort:'קצרה',pMedium:'בינונית',pLong:'ארוכה',
+  voiceLeg:'קול',voiceSel:'קול באנגלית',testVoice:'בדיקת קול',
+  vcLeg:'אבחון קול',vcHint:'אין צליל? האבחון משמיע "one, two, three" בכמה דרכים ומראה אילו מהן עובדות. צלמו מסך של התוצאה.',vcRun:'הפעלת אבחון',
+  doneBtn:'סיום',leave:'יציאה מהסבב',pts:'נק׳',endRound:'סיום הסבב',
+  typeNum:'הקלידו את המספר',yourAnswer:'התשובה שלכם',check:'בדיקה',
+  tapSpeak:'הקישו כדי לדבר',hearAgain:'השמעה חוזרת',skip:'דילוג',
+  note_type:'Enter בודק את התשובה. Shift+Enter משמיע שוב את המספר.',
+  roundOver:'הסבב הסתיים',stPoints:'נקודות',stCorrect:'נכונות',stAvg:'שניות בממוצע',
+  again:'סבב נוסף',missesBtn:'תרגול הטעויות שלי',mainScreen:'מסך ראשי',
+  m_small:'0 עד 20',h_small:'אבני הבניין, מ-zero עד twenty.',
+  m_teens:'teen או ty',h_teens:'thirteen או thirty? fourteen או forty? הקשיבו לסוף המילה.',
+  m_upto99:'0 עד 99',h_upto99:'כל המספרים מתחת למאה.',
+  m_hundreds:'מאות',h_hundreds:'100 עד 999.',
+  m_thousands:'אלפים',h_thousands:'1,000 עד 999,999.',
+  m_years:'שנים',h_years:'תשמעו "nineteen eighty-five". הקלידו 1985.',
+  m_dates:'תאריכים מלאים',h_dates:gb=>gb?'יום, חודש ושנה, היום קודם. הקלידו 14/07/1789, או 14 יולי 1789.':'חודש, יום ושנה, החודש קודם כמו בארה"ב. הקלידו 07/14/1789, או 14 יולי 1789.',
+  m_prices:'מחירים',h_prices:gb=>gb?'לירות שטרלינג ופני. הקלידו 12.50.':'דולרים וסנטים. הקלידו 12.50.',
+  m_phone:'מספרי טלפון',h_phone:gb=>gb?'נאמרים ספרה אחר ספרה, עם "oh" במקום 0 ו-"double seven" במקום 77. הקלידו את כל 11 הספרות.':'נאמרים ספרה אחר ספרה: five five five, one two three… הקלידו את כל 10 הספרות.',
+  m_mix:'מיקס',h_mix:'קצת מהכול.',
+  ah_type:'הקלידו את המספר בספרות והקישו על "בדיקה".',
+  ah_choose:'הקישו על המספר שאתם שומעים.',
+  ah_nosr:'הדפדפן הזה לא יכול להאזין לתשובות, אז תקלידו במקום. כדי לענות בקול, פתחו את הדף ב-Chrome.',
+  ah_artifact:'תשובות בקול לא עובדות כשהדף פתוח כ-Artifact של Claude, אז תקלידו במקום. כדי לענות בקול, פתחו אותו כדף אינטרנט רגיל ב-Chrome.',
+  ah_speak:'המיקרופון נדלק אחרי כל מספר. אמרו אותו באנגלית, למשל "nineteen eighty-five" או "July fourteenth". אפשר גם להקליד.',
+  ah_speakHe:'המיקרופון נדלק אחרי כל מספר. אמרו אותו בעברית, למשל "אלף תשע מאות שמונים וחמש" או "ארבעה עשר ביולי". אפשר גם להקליד.',
+  ah_speakFr:'המיקרופון נדלק אחרי כל מספר. אמרו אותו בצרפתית, למשל "mille neuf cent quatre-vingt-cinq" או "le quatorze juillet". אפשר גם להקליד.',
+  ah_speakUk:'המיקרופון נדלק אחרי כל מספר. אמרו אותו באוקראינית, למשל "тисяча дев’ятсот вісімдесят п’ять" או "чотирнадцяте липня". אפשר גם להקליד.',
+  ah_english:'המספר מופיע על המסך. אמרו אותו באנגלית כשהמיקרופון נדלק, למשל "seventy-seven". אפשר גם לכתוב אותו במילים באנגלית.',
+  note_english:'אמרו את המספר באנגלית, או כתבו אותו במילים באנגלית.',
+  typeEn:'כתבו באנגלית',tryAgain:'נסו שוב.',
+  note_speak:'אמרו את המספר באנגלית כשהקול נעצר. אפשר גם להקליד.',
+  note_speakHe:'אמרו את המספר בעברית כשהקול נעצר. אפשר גם להקליד.',
+  note_speakFr:'אמרו את המספר בצרפתית כשהקול נעצר. אפשר גם להקליד.',
+  note_speakUk:'אמרו את המספר באוקראינית כשהקול נעצר. אפשר גם להקליד.',
+  micSay:'אמרו מספר באנגלית, למשל "seventy-two".',
+  micSayHe:'אמרו מספר בעברית, למשל "שבעים ושתיים".',
+  micSayFr:'אמרו מספר בצרפתית, למשל "soixante-douze".',
+  micSayUk:'אמרו מספר באוקראינית, למשל "сімдесят два".',
+  bestHere:b=>`השיא שלכם כאן: ${grp(b)} נק׳`,
+  force:'באנדרואיד, עצרו את Chrome בכפייה (בהגדרות הטלפון: אפליקציות › Chrome › עצירה בכפייה) ופתחו אותו מחדש.',
+  notAllowed:'Chrome חסם את הצליל. הקישו על "השמעה חוזרת" או "בדיקת קול" כדי להשמיע.',
+  voiceFailed:(n,e)=>`הקול "${n}" נכשל (${e}), ולכן מושמע קול ברירת המחדל באנגלית של הטלפון.`,
+  speechFailed:e=>`ההקראה נכשלה (${e}). ${tr('force')} אם זה לא עוזר, בחרו קול אחר בהגדרות.`,
+  noStart:'לא התחיל צליל. בדקו את עוצמת המדיה והקישו על "השמעה חוזרת".',
+  vcHead:(b,n,f,g)=>`${b}: ${n} קולות, ${f} באנגלית. הקול במשחק: ${g}`,
+  vcDefault:'ברירת מחדל',vcDevice:'במכשיר',vcOnline:'ברשת',vcNoSpeech:'בדפדפן הזה אין הקראה.',vcNoLang:'בלי שפה',vcLang:'שפה',vcChecking:'בודקים…',
+  vcWorked:'עבד',vcFailed:e=>`נכשל (${e})`,vcNoStart:'לא התחיל צליל',vcNoEnd:'התחיל ולא הסתיים',vcEndOnly:'הסתיים (בלי אירוע התחלה)',vcNothing:'שום דבר לא עבד.',
+  note_choose:n=>`הקישו על המספר שאתם שומעים. במקלדת, לחצו 1 עד ${n}.`,
+  sec:'שנ׳',
+  retryPick:'לא בדיוק. הקשיבו שוב ובחרו תשובה אחרת.',
+  retryType:'לא בדיוק. הקשיבו שוב ונסו תשובה אחרת.',
+  lateOk:'נכון! הפעם בלי נקודות, כי זה לקח יותר מניסיון אחד.',
+  correct:(p,t,s)=>`נכון, <bdi>+${p}</bdi> נקודות תוך ${t} שנ׳${s>1?` (רצף של ${s})`:''}`,
+  skipped:'דילגתם',notQuite:'לא בדיוק',itWas:d=>`התשובה: <bdi>${d}</bdi>`,
+  youTyped:v=>`הקלדתם: <bdi>${v}</bdi>`,youPicked:v=>`בחרתם: <bdi>${v}</bdi>`,youSaid:v=>`אמרתם: <bdi>${v}</bdi>`,
+  nextNum:'המספר הבא',listening:'מקשיבים…',
+  micBlockedPlay:'הגישה למיקרופון חסומה. אפשרו אותה לדף הזה ב-Chrome, או בחרו "הקלדה" במסך הראשי.',
+  notCaught:'לא נקלט. הקישו כדי לדבר ונסו שוב.',
+  micBlocked:'המיקרופון חסום לדף הזה. ב-Chrome, עברו אל ⋮ › הגדרות › הגדרות אתרים › מיקרופון, אפשרו את האתר והקישו שוב על "בדיקת מיקרופון".',
+  micOn:'✓ המיקרופון פעיל. הקישו על "בדיקת מיקרופון" כדי לוודא שהוא שומע אתכם.',
+  micPrompt:'הקישו על "בדיקת מיקרופון" ואשרו גישה כש-Chrome מבקש.',
+  micHearing:h=>`נשמע: "${h}"`,
+  micNoSpeech:'לא נשמע כלום. ודאו ששום דבר לא מכסה את המיקרופון ונסו שוב.',
+  micNoDevice:'לא נמצא מיקרופון. ודאו שאפליקציה אחרת לא משתמשת בו ונסו שוב.',
+  micFail:e=>`בדיקת המיקרופון לא הצליחה (${e}). נסו שוב.`,
+  micWorks:h=>`✓ נשמע "${h}". המיקרופון עובד.`,
+  micStartFail:'לא הצלחנו להפעיל את המיקרופון. נסו שוב.',
+  newBest:(m,b)=>`שיא חדש ב"${m}"! השיא הקודם: ${grp(b)} נק׳.`,
+  firstBest:m=>`התוצאה הראשונה ב"${m}" נשמרה.`,
+  yourBest:(m,b)=>`השיא שלכם ב"${m}": ${grp(b)} נק׳.`
+},fr:{
+  title:'Numbers by Ear : les nombres en anglais à l’oreille',
+  settings:'Réglages',
+  lede:'Écoutez un nombre en anglais et tapez-le en chiffres le plus vite possible. Plus vous répondez vite, plus vous gagnez de points.',
+  noSpeech:'<strong>Ouvrez cette page dans Chrome pour entendre les nombres.</strong> Cet affichage ne peut pas lire la voix, donc la partie ne peut pas commencer ici. Dans Chrome, ⋮ › « Ajouter à l’écran d’accueil » crée un raccourci.',
+  noVoice:'Aucune voix anglaise n’a été trouvée sur cet appareil. Sur Android : Paramètres › Gestion globale › Synthèse vocale, touchez l’engrenage à côté du moteur, puis « Installer les données vocales » › Anglais. Sur iPhone : Réglages › Accessibilité › Contenu énoncé › Voix › Anglais.',
+  practise:'Que travailler',answerBy:'Comment répondre',sTyping:'Taper',sChoices:'Choisir parmi des réponses',sSpeak:'Le dire à voix haute',sEnglish:'Le dire en anglais',
+  sayLang:'Dire les nombres en',sayEn:'Anglais',sayHe:'Hébreu',sayFr:'Français',sayUk:'Ukrainien',
+  nchoices:'Nombre de réponses proposées, la bonne comprise',micTestBtn:'Tester le micro',
+  roundLen:'Longueur de la partie',len10:'10 nombres',len20:'20 nombres',len30:'30 nombres',start:'Commencer',
+  prefsLede:'Ces réglages s’appliquent à toutes les parties.',
+  accentLeg:'Anglais',acUS:'Américain',acUK:'Britannique',accentHint:'Change la voix, l’ordre des dates (7/14 ou 14/7), dollars ou livres sterling, et la façon de dire les numéros de téléphone.',
+  theme:'Thème',thAuto:'Auto',thLight:'Clair',thDark:'Sombre',thContrast:'Contraste élevé',thTricolore:'Bleu, blanc, rouge',thCafe:'Café',thMidnight:'Noir minuit',
+  themeHint:'« Auto » suit le mode clair ou sombre du téléphone.',
+  speed:'Vitesse de la voix',spSlow:'Plus lente',spNormal:'Normale',spFast:'Rapide',
+  pauseLeg:'Pause après une bonne réponse',pNone:'Aucune',pShort:'Courte',pMedium:'Moyenne',pLong:'Longue',
+  voiceLeg:'Voix',voiceSel:'Voix anglaise',testVoice:'Tester la voix',
+  vcLeg:'Diagnostic de la voix',vcHint:'Pas de son ? Le diagnostic lit « one, two, three » de plusieurs façons et montre lesquelles fonctionnent. Faites une capture d’écran du résultat.',vcRun:'Lancer le diagnostic',
+  doneBtn:'Terminé',leave:'Quitter la partie',pts:'pts',endRound:'Terminer',
+  typeNum:'Tapez le nombre',yourAnswer:'Votre réponse',check:'Vérifier',
+  tapSpeak:'Parler',hearAgain:'Réécouter',skip:'Passer',
+  note_type:'Entrée vérifie la réponse. Maj+Entrée fait réécouter le nombre.',
+  roundOver:'Partie terminée',stPoints:'points',stCorrect:'de bonnes réponses',stAvg:'secondes en moyenne',
+  again:'Rejouer',missesBtn:'Revoir mes erreurs',mainScreen:'Écran principal',
+  m_small:'0 à 20',h_small:'Les bases, de zero à twenty.',
+  m_teens:'-teen ou -ty',h_teens:'Thirteen ou thirty ? Fourteen ou forty ? Écoutez la fin du mot.',
+  m_upto99:'0 à 99',h_upto99:'Tous les nombres de moins de cent.',
+  m_hundreds:'Centaines',h_hundreds:'De 100 à 999.',
+  m_thousands:'Milliers',h_thousands:'De 1,000 à 999,999 (en anglais, la virgule sépare les milliers).',
+  m_years:'Années',h_years:'Vous entendrez « nineteen eighty-five ». Tapez 1985.',
+  m_dates:'Dates complètes',h_dates:gb=>gb?'Jour, mois et année, le jour en premier. Tapez 14/07/1789, ou 14 juillet 1789.':'Mois, jour et année, le mois en premier comme aux États-Unis. Tapez 07/14/1789, ou 14 juillet 1789.',
+  m_prices:'Prix',h_prices:gb=>gb?'Livres sterling et pence. Tapez 12.50 ou 12,50.':'Dollars et cents. Tapez 12.50 ou 12,50.',
+  m_phone:'Numéros de téléphone',h_phone:gb=>gb?'Dits chiffre par chiffre, avec « oh » pour 0 et « double seven » pour 77. Tapez les 11 chiffres.':'Dits chiffre par chiffre : five five five, one two three… Tapez les 10 chiffres.',
+  m_mix:'Mélange',h_mix:'Un peu de tout.',
+  ah_type:'Tapez le nombre en chiffres, puis touchez « Vérifier ».',
+  ah_choose:'Touchez le nombre que vous entendez.',
+  ah_nosr:'Ce navigateur ne peut pas écouter les réponses, vous les taperez donc. Pour répondre à voix haute, ouvrez la page dans Chrome.',
+  ah_artifact:'Les réponses à voix haute ne fonctionnent pas quand la page est ouverte comme artefact Claude, vous les taperez donc. Pour répondre à voix haute, ouvrez-la comme une page web normale dans Chrome.',
+  ah_speak:'Le micro s’allume après chaque nombre. Dites-le en anglais, par exemple « nineteen eighty-five » ou « July fourteenth ». Vous pouvez aussi taper.',
+  ah_speakHe:'Le micro s’allume après chaque nombre. Dites-le en hébreu, par exemple « אלף תשע מאות שמונים וחמש » ou « ארבעה עשר ביולי ». Vous pouvez aussi taper.',
+  ah_speakFr:'Le micro s’allume après chaque nombre. Dites-le en français, par exemple « mille neuf cent quatre-vingt-cinq » ou « le quatorze juillet ». Vous pouvez aussi taper.',
+  ah_speakUk:'Le micro s’allume après chaque nombre. Dites-le en ukrainien, par exemple « тисяча дев’ятсот вісімдесят п’ять » ou « чотирнадцяте липня ». Vous pouvez aussi taper.',
+  ah_english:'Le nombre s’affiche à l’écran. Dites-le en anglais quand le micro s’allume, par exemple « seventy-seven ». Vous pouvez aussi l’écrire en toutes lettres en anglais.',
+  note_english:'Dites le nombre en anglais, ou écrivez-le en toutes lettres en anglais.',
+  typeEn:'Écrivez-le en anglais',tryAgain:'Réessayez.',
+  note_speak:'Dites le nombre en anglais quand la voix s’arrête. Vous pouvez aussi taper.',
+  note_speakHe:'Dites le nombre en hébreu quand la voix s’arrête. Vous pouvez aussi taper.',
+  note_speakFr:'Dites le nombre en français quand la voix s’arrête. Vous pouvez aussi taper.',
+  note_speakUk:'Dites le nombre en ukrainien quand la voix s’arrête. Vous pouvez aussi taper.',
+  micSay:'Dites un nombre en anglais, par exemple « seventy-two ».',
+  micSayHe:'Dites un nombre en hébreu, par exemple « שבעים ושתיים ».',
+  micSayFr:'Dites un nombre en français, par exemple « soixante-douze ».',
+  micSayUk:'Dites un nombre en ukrainien, par exemple « сімдесят два ».',
+  bestHere:b=>`Votre record ici : ${grp(b)} pts`,
+  force:'Sur Android, forcez l’arrêt de Chrome (Paramètres du téléphone › Applications › Chrome › Forcer l’arrêt), puis rouvrez-le.',
+  notAllowed:'Chrome a bloqué le son. Touchez « Réécouter » ou « Tester la voix » pour l’entendre.',
+  voiceFailed:(n,e)=>`La voix « ${n} » a échoué (${e}), la voix anglaise par défaut du téléphone est donc utilisée.`,
+  speechFailed:e=>`La lecture a échoué (${e}). ${tr('force')} Si cela ne suffit pas, choisissez une autre voix dans les réglages.`,
+  noStart:'Aucun son n’a démarré. Vérifiez le volume multimédia, puis touchez « Réécouter ».',
+  vcHead:(b,n,f,g)=>`${b} : ${n} voix, dont ${f} en anglais. Voix du jeu : ${g}`,
+  vcDefault:'par défaut',vcDevice:'sur l’appareil',vcOnline:'en ligne',vcNoSpeech:'Ce navigateur n’a pas de synthèse vocale.',vcNoLang:'Sans langue',vcLang:'Langue',vcChecking:'Vérification…',
+  vcWorked:'a fonctionné',vcFailed:e=>`échec (${e})`,vcNoStart:'aucun son',vcNoEnd:'a démarré sans finir',vcEndOnly:'terminé (sans début)',vcNothing:'Rien n’a fonctionné.',
+  note_choose:n=>`Touchez le nombre que vous entendez. Au clavier, appuyez sur 1 à ${n}.`,
+  sec:'s',
+  retryPick:'Pas tout à fait. Réécoutez et choisissez une autre réponse.',
+  retryType:'Pas tout à fait. Réécoutez et essayez une autre réponse.',
+  lateOk:'C’est ça. Pas de points cette fois, il a fallu plus d’un essai.',
+  correct:(p,t,s)=>`Juste, <bdi>+${p}</bdi> points en ${t} s${s>1?` (série de ${s})`:''}`,
+  skipped:'Passé',notQuite:'Pas tout à fait',itWas:d=>`C’était <bdi>${d}</bdi>`,
+  youTyped:v=>`Vous avez tapé « <bdi>${v}</bdi> »`,youPicked:v=>`Vous avez choisi « <bdi>${v}</bdi> »`,youSaid:v=>`Vous avez dit « <bdi>${v}</bdi> »`,
+  nextNum:'Nombre suivant',listening:'J’écoute…',
+  micBlockedPlay:'L’accès au micro est bloqué. Autorisez-le pour cette page dans Chrome, ou choisissez « Taper » sur l’écran principal.',
+  notCaught:'Je n’ai pas compris. Touchez « Parler » et réessayez.',
+  micBlocked:'Le micro est bloqué pour cette page. Dans Chrome, allez dans ⋮ › Paramètres › Paramètres des sites › Micro, autorisez ce site, puis touchez à nouveau « Tester le micro ».',
+  micOn:'✓ Le micro est activé. Touchez « Tester le micro » pour vérifier qu’il vous entend.',
+  micPrompt:'Touchez « Tester le micro » et autorisez l’accès quand Chrome le demande.',
+  micHearing:h=>`J’entends : « ${h} »`,
+  micNoSpeech:'Rien entendu. Vérifiez que rien ne couvre le micro et réessayez.',
+  micNoDevice:'Aucun micro trouvé. Vérifiez qu’une autre application ne l’utilise pas, puis réessayez.',
+  micFail:e=>`Le test du micro n’a pas fonctionné (${e}). Réessayez.`,
+  micWorks:h=>`✓ Entendu « ${h} ». Votre micro fonctionne.`,
+  micStartFail:'Impossible de démarrer le micro. Réessayez.',
+  newBest:(m,b)=>`Nouveau record en « ${m} » ! Précédent : ${grp(b)} pts.`,
+  firstBest:m=>`Premier score enregistré en « ${m} ».`,
+  yourBest:(m,b)=>`Votre record en « ${m} » : ${grp(b)} pts.`
+},uk:{
+  title:'Numbers by Ear: англійські числа на слух',
+  settings:'Налаштування',
+  lede:'Послухайте число англійською і введіть його цифрами якомога швидше. Що швидше ви відповідаєте, то більше балів отримуєте.',
+  noSpeech:'<strong>Відкрийте цю сторінку в Chrome, щоб чути числа.</strong> Тут не можна відтворити мовлення, тому раунд не почнеться. У Chrome через ⋮ › «Додати на головний екран» можна створити ярлик.',
+  noVoice:'На цьому пристрої не знайдено англійського голосу. На Android: Налаштування › Загальне керування › Синтез мовлення, торкніться шестірні біля рушія, потім «Установити голосові дані» › англійська. На iPhone: Параметри › Доступність › Озвучення вмісту › Голоси › Англійська.',
+  practise:'Що тренувати',answerBy:'Як відповідати',sTyping:'Ввести',sChoices:'Вибрати з варіантів',sSpeak:'Сказати вголос',sEnglish:'Сказати англійською',
+  sayLang:'Якою мовою називати числа',sayEn:'Англійська',sayHe:'Іврит',sayFr:'Французька',sayUk:'Українська',
+  nchoices:'Скільки варіантів, разом із правильним',micTestBtn:'Перевірити мікрофон',
+  roundLen:'Довжина раунду',len10:'10 чисел',len20:'20 чисел',len30:'30 чисел',start:'Почати раунд',
+  prefsLede:'Ці налаштування діють для всіх раундів.',
+  accentLeg:'Англійська',acUS:'Американська',acUK:'Британська',accentHint:'Змінює голос, порядок дати (7/14 чи 14/7), долари чи фунти і те, як називають номери телефонів.',
+  theme:'Тема',thAuto:'Авто',thLight:'Світла',thDark:'Темна',thContrast:'Висока контрастність',thTricolore:'Червоний, білий, синій',thCafe:'Кав’ярня',thMidnight:'Опівнічна чорна',
+  themeHint:'«Авто» стежить за світлим або темним режимом телефона.',
+  speed:'Швидкість мовлення',spSlow:'Повільніше',spNormal:'Звичайна',spFast:'Швидка',
+  pauseLeg:'Пауза після правильної відповіді',pNone:'Без паузи',pShort:'Коротка',pMedium:'Середня',pLong:'Довга',
+  voiceLeg:'Голос',voiceSel:'Англійський голос',testVoice:'Перевірити голос',
+  vcLeg:'Перевірка голосу',vcHint:'Немає звуку? Перевірка відтворює «one, two, three» кількома способами й показує, які з них працюють. Зробіть знімок екрана з результатом.',vcRun:'Запустити перевірку',
+  doneBtn:'Готово',leave:'Вийти з раунду',pts:'б.',endRound:'Завершити раунд',
+  typeNum:'Ваше число',yourAnswer:'Ваша відповідь',check:'Перевірити',
+  tapSpeak:'Говорити',hearAgain:'Ще раз',skip:'Пропустити',
+  note_type:'Enter перевіряє відповідь. Shift+Enter відтворює число ще раз.',
+  roundOver:'Раунд завершено',stPoints:'балів',stCorrect:'правильно',stAvg:'секунд у середньому',
+  again:'Грати ще',missesBtn:'Потренувати помилки',mainScreen:'Головний екран',
+  m_small:'Від 0 до 20',h_small:'Основа: від zero до twenty.',
+  m_teens:'-teen чи -ty',h_teens:'Thirteen чи thirty? Fourteen чи forty? Слухайте кінець слова.',
+  m_upto99:'Від 0 до 99',h_upto99:'Усі числа до ста.',
+  m_hundreds:'Сотні',h_hundreds:'Від 100 до 999.',
+  m_thousands:'Тисячі',h_thousands:'Від 1,000 до 999,999 (в англійській кома відділяє тисячі).',
+  m_years:'Роки',h_years:'Ви почуєте «nineteen eighty-five». Введіть 1985.',
+  m_dates:'Повні дати',h_dates:gb=>gb?'День, місяць і рік, спершу день. Введіть 14/07/1789 або 14 липня 1789.':'Місяць, день і рік, спершу місяць, як у США. Введіть 07/14/1789 або 14 липня 1789.',
+  m_prices:'Ціни',h_prices:gb=>gb?'Фунти й пенси. Введіть 12.50 або 12,50.':'Долари й центи. Введіть 12.50 або 12,50.',
+  m_phone:'Номери телефонів',h_phone:gb=>gb?'Звучать по одній цифрі, «oh» означає 0, а «double seven» означає 77. Введіть усі 11 цифр.':'Звучать по одній цифрі: five five five, one two three… Введіть усі 10 цифр.',
+  m_mix:'Мікс',h_mix:'Усього потроху.',
+  ah_type:'Введіть число цифрами й торкніться «Перевірити».',
+  ah_choose:'Торкніться числа, яке почули.',
+  ah_nosr:'Цей браузер не може слухати відповіді, тож ви вводитимете їх. Щоб відповідати голосом, відкрийте сторінку в Chrome.',
+  ah_artifact:'Голосові відповіді не працюють, коли сторінку відкрито як артефакт Claude, тож ви вводитимете їх. Щоб відповідати голосом, відкрийте її як звичайну вебсторінку в Chrome.',
+  ah_speak:'Мікрофон вмикається після кожного числа. Назвіть його англійською, наприклад «nineteen eighty-five» або «July fourteenth». Можна також ввести з клавіатури.',
+  ah_speakHe:'Мікрофон вмикається після кожного числа. Назвіть його івритом, наприклад «אלף תשע מאות שמונים וחמש» або «ארבעה עשר ביולי». Можна також ввести з клавіатури.',
+  ah_speakFr:'Мікрофон вмикається після кожного числа. Назвіть його французькою, наприклад «mille neuf cent quatre-vingt-cinq» або «le quatorze juillet». Можна також ввести з клавіатури.',
+  ah_speakUk:'Мікрофон вмикається після кожного числа. Назвіть його українською, наприклад «тисяча дев’ятсот вісімдесят п’ять» або «чотирнадцяте липня». Можна також ввести з клавіатури.',
+  ah_english:'Число з’являється на екрані. Коли ввімкнеться мікрофон, назвіть його англійською, наприклад «seventy-seven». Можна також написати його англійськими словами.',
+  note_english:'Назвіть число англійською або напишіть його англійськими словами.',
+  typeEn:'Англійською',tryAgain:'Спробуйте ще раз.',
+  note_speak:'Назвіть число англійською, коли голос замовкне. Можна також ввести з клавіатури.',
+  note_speakHe:'Назвіть число івритом, коли голос замовкне. Можна також ввести з клавіатури.',
+  note_speakFr:'Назвіть число французькою, коли голос замовкне. Можна також ввести з клавіатури.',
+  note_speakUk:'Назвіть число українською, коли голос замовкне. Можна також ввести з клавіатури.',
+  micSay:'Назвіть число англійською, наприклад «seventy-two».',
+  micSayHe:'Назвіть число івритом, наприклад «שבעים ושתיים».',
+  micSayFr:'Назвіть число французькою, наприклад «soixante-douze».',
+  micSayUk:'Назвіть число українською, наприклад «сімдесят два».',
+  bestHere:b=>`Ваш рекорд тут: ${grp(b)} б.`,
+  force:'На Android примусово зупиніть Chrome (Налаштування телефона › Програми › Chrome › Примусово зупинити) і відкрийте його знову.',
+  notAllowed:'Chrome заблокував звук. Торкніться «Ще раз» або «Перевірити голос», щоб відтворити.',
+  voiceFailed:(n,e)=>`Голос «${n}» не спрацював (${e}), тому звучить стандартний англійський голос телефона.`,
+  speechFailed:e=>`Мовлення не спрацювало (${e}). ${tr('force')} Якщо це не допоможе, виберіть інший голос у налаштуваннях.`,
+  noStart:'Звук не почався. Перевірте гучність медіа й торкніться «Ще раз».',
+  vcHead:(b,n,f,g)=>`${b}: голосів: ${n}, англійських: ${f}. Голос у грі: ${g}`,
+  vcDefault:'за замовчуванням',vcDevice:'на пристрої',vcOnline:'онлайн',vcNoSpeech:'У цьому браузері немає мовлення.',vcNoLang:'Без мови',vcLang:'Мова',vcChecking:'Перевіряємо…',
+  vcWorked:'працює',vcFailed:e=>`помилка (${e})`,vcNoStart:'звук не почався',vcNoEnd:'почався, але не завершився',vcEndOnly:'завершився (без події початку)',vcNothing:'Нічого не спрацювало.',
+  note_choose:n=>`Торкніться числа, яке почули. На клавіатурі натискайте від 1 до ${n}.`,
+  sec:'с',
+  retryPick:'Не зовсім. Послухайте ще раз і виберіть інше.',
+  retryType:'Не зовсім. Послухайте ще раз і спробуйте іншу відповідь.',
+  lateOk:'Саме так. Цього разу без балів, бо знадобилося кілька спроб.',
+  correct:(p,t,s)=>`Правильно, <bdi>+${p}</bdi> б. за ${t} с${s>1?` (серія: ${s})`:''}`,
+  skipped:'Пропущено',notQuite:'Не зовсім',itWas:d=>`Правильно: <bdi>${d}</bdi>`,
+  youTyped:v=>`Ви ввели «<bdi>${v}</bdi>»`,youPicked:v=>`Ви вибрали «<bdi>${v}</bdi>»`,youSaid:v=>`Ви сказали «<bdi>${v}</bdi>»`,
+  nextNum:'Наступне число',listening:'Слухаю…',
+  micBlockedPlay:'Доступ до мікрофона заблоковано. Дозвольте його для цієї сторінки в Chrome або виберіть «Ввести» на головному екрані.',
+  notCaught:'Не вдалося розчути. Торкніться «Говорити» і спробуйте ще раз.',
+  micBlocked:'Мікрофон заблоковано для цієї сторінки. У Chrome відкрийте ⋮ › Налаштування › Налаштування сайтів › Мікрофон, дозвольте цей сайт і знову торкніться «Перевірити мікрофон».',
+  micOn:'✓ Мікрофон увімкнено. Торкніться «Перевірити мікрофон», щоб переконатися, що він вас чує.',
+  micPrompt:'Торкніться «Перевірити мікрофон» і дозвольте доступ, коли Chrome запитає.',
+  micHearing:h=>`Чую: «${h}»`,
+  micNoSpeech:'Нічого не чути. Перевірте, чи ніщо не закриває мікрофон, і спробуйте ще раз.',
+  micNoDevice:'Мікрофон не знайдено. Перевірте, чи його не використовує інша програма, і спробуйте ще раз.',
+  micFail:e=>`Перевірка мікрофона не вдалася (${e}). Спробуйте ще раз.`,
+  micWorks:h=>`✓ Почуто «${h}». Мікрофон працює.`,
+  micStartFail:'Не вдалося ввімкнути мікрофон. Спробуйте ще раз.',
+  newBest:(m,b)=>`Новий рекорд у «${m}»! Попередній: ${grp(b)} б.`,
+  firstBest:m=>`Перший результат у «${m}» збережено.`,
+  yourBest:(m,b)=>`Ваш рекорд у «${m}»: ${grp(b)} б.`
+}};
+document.querySelectorAll('[data-t]').forEach(el=>I18N.en[el.dataset.t]=el.innerHTML);
+document.querySelectorAll('[data-ta]').forEach(el=>el.dataset.ta.split(',').forEach(p=>{const [a,k]=p.split(':');I18N.en[k]=el.getAttribute(a)}));
+I18N.en.title=document.title;
+let lang='en';
+const tr=(k,...a)=>{const v=I18N[lang][k]??I18N.en[k];return typeof v==='function'?v(...a):v};
+function applyLang(){
+  lang=val('lang');const h=document.documentElement;h.lang=lang;h.dir=lang==='he'?'rtl':'ltr';document.title=tr('title');
+  document.querySelectorAll('[data-t]').forEach(el=>el.innerHTML=tr(el.dataset.t));
+  document.querySelectorAll('[data-ta]').forEach(el=>el.dataset.ta.split(',').forEach(p=>{const [a,k]=p.split(':');el.setAttribute(a,tr(k))}));
+  document.querySelectorAll('input[name=mode]').forEach(r=>r.nextElementSibling.textContent=tr('m_'+r.value));
+}
+
+try{const s=JSON.parse(store.get('settings')||'{}');setVal('lang',s.lang||(/^(he|iw)/i.test(navigator.language)?'he':/^fr/i.test(navigator.language)?'fr':/^uk/i.test(navigator.language)?'uk':'en'));setVal('accent',s.accent||(/^en-(gb|ie|au|nz)/i.test(navigator.language)?'gb':'us'));setVal('spoken',s.spoken||val('lang'));if(s.mode)setVal('mode',s.mode);if(s.len)setVal('len',s.len);if(s.speed)setVal('speed',s.speed);if(s.pause)setVal('pause',s.pause);if(s.style)setVal('style',s.style);if(s.nchoices)setVal('nchoices',s.nchoices);if(s.theme)setVal('theme',s.theme)}catch(e){}
+function onSettings(){
+  const cl=document.documentElement.classList;[...cl].filter(c=>c.startsWith('t-')).forEach(c=>cl.remove(c));if(val('theme')!=='auto')cl.add('t-'+val('theme'));
+  applyLang();
+  const st=val('style'),wantMic=(st==='speak'||st==='english')&&SRok&&micOK;
+  $('micOpts').hidden=!wantMic;if(!wantMic)$('micStatus').textContent='';
+  $('sayLangOpts').hidden=st==='english';
+  $('chooseOpts').hidden=st!=='choose';
+  if(wantMic&&!permChecked){permChecked=true;micPermCheck()}
+  $('answerHint').textContent=tr(st==='type'?'ah_type':st==='choose'?'ah_choose':!SRok?'ah_nosr':!micOK?'ah_artifact':st==='english'?'ah_english':spk('ah_speak'));
+  $('hint').textContent=tr('h_'+val('mode'),GB());
+  const b=+store.get(`best:${val('mode')}:${val('len')}`)||0;
+  $('bestSetup').textContent=b?tr('bestHere',b):'';
+  store.set('settings',JSON.stringify({mode:val('mode'),len:val('len'),speed:val('speed'),pause:val('pause'),style:val('style'),nchoices:val('nchoices'),theme:val('theme'),lang:val('lang'),spoken:val('spoken'),accent:val('accent')}));
+}
+document.querySelectorAll('#setup input[type=radio],#prefs input[type=radio]').forEach(r=>r.addEventListener('change',onSettings));
+onSettings();
+
+/* ---------- speech ---------- */
+const SS=window.speechSynthesis;
+let voices=[],voice=null,sid=0;
+function noSpeech(on){
+  $('noSpeech').hidden=!on;$('start').disabled=on;$('start').style.opacity=on?.5:'';
+  if(on){$('noVoice').hidden=true;$('voiceSet').hidden=true}
+}
+function loadVoices(){
+  if(!SS||typeof SpeechSynthesisUtterance==='undefined'){noSpeech(true);return}
+  const all=SS.getVoices();
+  if(all.length)noSpeech(false);
+  const L=accLang(),norm=l=>l.replace('_','-');
+  voices=all.filter(v=>/^en/i.test(v.lang)).sort((a,b)=>(norm(b.lang)===L)-(norm(a.lang)===L));  // the chosen accent's voices first
+  const sel=$('voice');sel.innerHTML='';
+  voices.forEach((v,i)=>sel.insertAdjacentHTML('beforeend',`<option value="${i}">${v.name} (${v.lang})</option>`));
+  const saved=store.get('voice:'+val('accent'));const idx=Math.max(0,voices.findIndex(v=>v.name===saved));
+  voice=voices[idx]||null;sel.value=String(idx);
+  $('noVoice').hidden=!(all.length&&!voices.length);
+  $('voiceSet').hidden=!voices.length;
+}
+if(SS){SS.onvoiceschanged=loadVoices}
+document.querySelectorAll('input[name=accent]').forEach(r=>r.addEventListener('change',loadVoices));
+loadVoices();
+setTimeout(()=>{if(!SS||!SS.getVoices().length)noSpeech(true)},2000);
+$('voice').addEventListener('change',e=>{voice=voices[+e.target.value]||null;if(voice)store.set('voice:'+val('accent'),voice.name);speakMsg('')});
+let keepMsg=false;
+function speakMsg(t,keep){keepMsg=!!keep;document.querySelectorAll('.speechMsg').forEach(m=>{m.textContent=t;m.hidden=!t})}
+function speak(text,done){
+  const id=++sid;
+  if(!SS){done&&done();return}
+  SS.cancel();
+  const rate=+val('speed');
+  let fired=false,started=false,to;
+  const fin=()=>{if(fired||id!==sid)return;fired=true;clearTimeout(to);done&&done()};
+  setTimeout(()=>{
+    if(id!==sid)return;
+    const u=new SpeechSynthesisUtterance(text);u.lang=accLang();if(voice)u.voice=voice;u.rate=rate;
+    u.onstart=()=>{started=true;if(!keepMsg)speakMsg('')};
+    u.onend=fin;
+    u.onerror=e=>{
+      if(id!==sid||e.error==='interrupted'||e.error==='canceled')return fin();
+      if(e.error==='not-allowed'){speakMsg(tr('notAllowed'));return fin()}
+      if(voice){speakMsg(tr('voiceFailed',voice.name,e.error),true);voice=null;return speak(text,done)}
+      speakMsg(tr('speechFailed',e.error));fin();
+    };
+    to=setTimeout(()=>{if(id===sid&&!started)speakMsg(tr('noStart'));fin()},1500+text.length*110/rate);
+    SS.speak(u);
+  },60);
+}
+$('test').addEventListener('click',()=>speak('thirteen, thirty'));
+
+/* ---------- voice check: tries each way of asking for French and reports what the device did ---------- */
+$('vcheck').addEventListener('click',async()=>{
+  const b=$('vcheck'),out=$('vcheckOut'),all=SS?SS.getVoices():[],fr=all.filter(v=>/^en/i.test(v.lang)),L=accLang();
+  const lines=[tr('vcHead',(navigator.userAgent.match(/Chrome\/\d+/)||['Browser'])[0],all.length,fr.length,voice?voice.name:tr('vcDefault'))];
+  fr.forEach(v=>lines.push(`• ${v.name} · ${v.lang} · ${tr(v.localService?'vcDevice':'vcOnline')}${v.default?' · '+tr('vcDefault'):''}`));
+  const show=()=>{out.textContent=lines.join('\n');out.hidden=false};
+  if(!SS){lines.push(tr('vcNoSpeech'));return show()}
+  const tests=[[tr('vcNoLang'),null,null],[tr('vcLang')+' '+L,L,null],[tr('vcLang')+' en','en',null]];
+  voices.slice(0,4).forEach(v=>{tests.push([`${v.name} (${v.lang})`,v.lang,v]);if(v.lang!==L)tests.push([`${v.name} (${L})`,L,v])});
+  b.disabled=true;b.textContent=tr('vcChecking');sid++;show();
+  let anyOk=false;
+  for(const [i,[label,lng,v]] of tests.entries()){
+    const res=await new Promise(done=>{
+      SS.cancel();
+      const u=new SpeechSynthesisUtterance('one, two, three');if(lng)u.lang=lng;if(v)u.voice=v;
+      let started=false;const t=setTimeout(()=>done(tr(started?'vcNoEnd':'vcNoStart')),6000);
+      u.onstart=()=>{started=true};
+      u.onend=()=>{clearTimeout(t);if(started)anyOk=true;done(tr(started?'vcWorked':'vcEndOnly'))};
+      u.onerror=e=>{clearTimeout(t);done(tr('vcFailed',e.error))};
+      setTimeout(()=>SS.speak(u),60);
+    });
+    lines.push(`${i+1}. ${label}: ${res}`);show();
+  }
+  if(!anyOk){lines.push(tr('vcNothing')+' '+tr('force'));show()}
+  b.disabled=false;b.textContent=tr('vcRun');
+});
+
+/* ---------- game ---------- */
+let S=null;
+const input=$('input'),plaque=$('plaque'),num=$('num');
+function show(id){['setup','prefs','play','done'].forEach(s=>$(s).hidden=s!==id);window.scrollTo(0,0)}
+function startRound(items,mode){
+  S={mode,items,i:0,score:0,streak:0,results:[],phase:'idle'};
+  $('track').innerHTML=items.map(()=>'<div class="seg"></div>').join('');
+  $('score').textContent='0';
+  $('mic').hidden=!speakMode();$('replay').hidden=engMode();
+  $('form').hidden=chooseMode();$('choices').hidden=!chooseMode();
+  input.placeholder=tr(engMode()?'typeEn':'typeNum');
+  $('playNote').textContent=chooseMode()?tr('note_choose',val('nchoices')):tr(engMode()?'note_english':!speakMode()?'note_type':spk('note_speak'));
+  $('micMsg').textContent='';
+  show('play');next();
+}
+function paintTrack(){
+  [...$('track').children].forEach((seg,i)=>{
+    const r=S.results[i];seg.className='seg'+(r?(r.ok?' ok':' bad'):(i===S.i?' cur':''));
+  });
+}
+function next(){
+  if(S.i>=S.items.length)return finish();
+  const it=S.items[S.i];
+  S.replays=0;S.tStart=null;S.missed=false;S.wrongPicks=[];S.phase='answer';
+  plaque.className='plaque';num.textContent=engMode()?it.display:'?';
+  $('fb').innerHTML='';$('clock').textContent='0.0 '+tr('sec');
+  if(chooseMode())renderChoices(it);
+  input.value='';input.inputMode=engMode()?'text':it.input||MODES[S.mode]?.input||'numeric';
+  $('prog').textContent=`${S.i+1} / ${S.items.length}`;
+  paintTrack();focusInput();
+  sayCurrent();
+}
+function sayCurrent(){
+  stopListening();
+  // Saying it in French: the number is on the plaque, so nothing is spoken; stop any leftover speech so the mic doesn't hear it
+  if(engMode()){sid++;SS&&SS.cancel();S.tStart=performance.now();tick();if(speakMode())listen();return}
+  plaque.classList.add('listening');
+  speak(S.items[S.i].say,()=>{
+    plaque.classList.remove('listening');
+    if(S.phase==='answer'&&S.tStart===null){S.tStart=performance.now();tick()}
+    if(S.phase==='answer'&&speakMode())listen();
+  });
+}
+function tick(){
+  if(!S||S.phase!=='answer'||S.tStart===null)return;
+  $('clock').textContent=((performance.now()-S.tStart)/1000).toFixed(1)+' '+tr('sec');
+  requestAnimationFrame(tick);
+}
+function replay(){if(S&&S.phase==='answer'&&!engMode()){S.replays++;sayCurrent();focusInput()}}
+function renderChoices(it){
+  const k=+val('nchoices'),opts=[];
+  for(const x of it.alts()){if(opts.length>=k-1)break;if(x!==it.display&&!opts.includes(x))opts.push(x)}
+  opts.push(it.display);shuffle(opts);
+  $('choices').innerHTML=opts.map((o,i)=>`<button class="choice" type="button" data-v="${o}">${o}</button>`).join('');
+  [...$('choices').children].forEach(b=>b.addEventListener('click',()=>{if(S.phase==='feedback')advance();else submit(false,null,b.dataset.v)}));
+}
+function submit(skip,alts,choice){
+  if(!S||S.phase!=='answer')return;
+  const v=skip?'':choice!=null?choice:alts?alts[0].trim():input.value.trim();
+  if(!skip&&!v)return;
+  const it=S.items[S.i];
+  const t=S.tStart?(performance.now()-S.tStart)/1000:0;
+  // in French mode a typed answer must be words: digits are dropped, since the number is already on screen
+  const ok=!skip&&(choice!=null?choice===it.display:(alts||[engMode()?v.replace(/\d/g,''):v]).some(a=>candidates(a).some(c=>it.check(c))));
+  if(!skip&&!ok){
+    S.missed=true;S.streak=0;S.wrongPicks.push(v);
+    const btns=[...$('choices').children];
+    btns.forEach(b=>{b.disabled=true;if(b.dataset.v===choice)b.classList.add('bad')});
+    plaque.className='plaque bad';
+    $('fb').innerHTML=`<p class="verdict bad">${tr(chooseMode()?'retryPick':'retryType')}</p>`;
+    if(!chooseMode())input.value='';
+    if(engMode()){  // nothing to replay: show what was heard and reopen the mic
+      $('fb').innerHTML=`<p class="verdict bad">${tr('notQuite')}. ${tr(alts?'youSaid':'youTyped',v.replace(/</g,'&lt;'))}. ${tr('tryAgain')}</p>`;
+      setTimeout(()=>{if(S&&S.phase==='answer'&&S.items[S.i]===it&&speakMode())listen()},400);  // let the last recognition release the mic first
+      focusInput();return;
+    }
+    plaque.classList.add('listening');
+    speak(it.say,()=>{
+      plaque.classList.remove('listening');
+      if(!S||S.phase!=='answer'||S.items[S.i]!==it)return;
+      plaque.className='plaque';
+      if(chooseMode()){$('fb').innerHTML='';btns.forEach(b=>{b.classList.remove('bad');b.disabled=S.wrongPicks.includes(b.dataset.v)})}
+      else{focusInput();if(speakMode())listen()}
+    });
+    focusInput();
+    return;
+  }
+  if(ok&&S.missed){
+    S.phase='feedback';
+    S.results.push({it,v:S.wrongPicks[0],ok:false,t,pts:0});
+    [...$('choices').children].forEach(b=>{b.disabled=b.dataset.v!==it.display;if(b.dataset.v===it.display)b.classList.add('ok')});
+    plaque.className='plaque ok';num.textContent=it.display;
+    $('fb').innerHTML=`<p class="verdict ok">${tr('lateOk')}</p><p class="words" lang="en">${it.words}</p>`;
+    paintTrack();
+    S.timer=setTimeout(advance,Math.max(+val('pause')*1000,1200));
+    return;
+  }
+  if(choice!=null||chooseMode())[...$('choices').children].forEach(b=>{b.disabled=!(b.dataset.v===it.display&&!ok);if(b.dataset.v===it.display)b.classList.add('ok');else if(b.dataset.v===choice)b.classList.add('bad')});
+  S.phase='feedback';stopListening();
+  let pts=0;
+  if(ok){S.streak++;pts=Math.max(10,Math.round(100-Math.max(0,t-1)*15)-S.replays*15)+Math.min(50,(S.streak-1)*10);S.score+=pts}
+  else S.streak=0;
+  S.results.push({it,v,ok,t,pts});
+  plaque.className='plaque '+(ok?'ok':'bad');num.textContent=it.display;
+  $('score').textContent=grp(S.score);$('clock').textContent=t.toFixed(1)+' '+tr('sec');
+  const words=`<p class="words" lang="en">${it.words}</p>`;
+  if(ok){
+    $('fb').innerHTML=`<p class="verdict ok">${tr('correct',pts,t.toFixed(1),S.streak)}</p>${words}`;
+    S.timer=setTimeout(advance,+val('pause')*1000);
+  }else{
+    $('fb').innerHTML=`<p class="verdict bad">${tr(skip?'skipped':'notQuite')}. ${tr('itWas',it.display)}</p>${words}${v?`<p class="you">${tr(choice!=null?'youPicked':alts?'youSaid':'youTyped',v.replace(/</g,'&lt;'))}</p>`:''}<button class="btn primary" type="button" id="nextBtn">${tr('nextNum')}</button>`;
+    $('nextBtn').addEventListener('click',advance);
+    input.value='';
+    speak(it.say);
+  }
+  paintTrack();focusInput();
+}
+function advance(){
+  if(!S||S.phase!=='feedback')return;
+  $('micMsg').textContent='';
+  clearTimeout(S.timer);S.i++;next();
+}
+document.addEventListener('keydown',e=>{
+  if(!S||$('play').hidden||!chooseMode())return;
+  if(e.key==='Enter'&&S.phase==='feedback'){e.preventDefault();advance();return}
+  const n=+e.key;if(S.phase==='answer'&&n>=1){const b=$('choices').children[n-1];if(b){e.preventDefault();b.click()}}
+});
+$('form').addEventListener('submit',e=>{e.preventDefault();if(S&&S.phase==='feedback')advance();else submit(false)});
+input.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.shiftKey){e.preventDefault();replay()}});
+$('replay').addEventListener('click',replay);
+$('skip').addEventListener('click',()=>submit(true));
+$('quit').addEventListener('click',()=>{if(!S)return;stopListening();clearTimeout(S.timer);sid++;SS&&SS.cancel();S.results.length?finish():show('setup')});
+function leaveRound(){if(!S)return;stopListening();clearTimeout(S.timer);S.phase='left';sid++;SS&&SS.cancel();show('setup')}
+$('leave').addEventListener('click',leaveRound);
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('play').hidden)leaveRound()});
+
+/* ---------- answering by voice ---------- */
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+let rec=null;
+const chooseMode=()=>val('style')==='choose';
+const engMode=()=>val('style')==='english';  // "Saying it in English": the number is shown, the learner says it
+const speakMode=()=>(val('style')==='speak'||engMode())&&!!SR&&micOK;
+function focusInput(){if(!speakMode()&&!chooseMode())input.focus({preventScroll:true})}
+const recLang=()=>engMode()?accLang():{he:'he-IL',fr:'fr-FR',uk:'uk-UA'}[val('spoken')]||accLang();
+function setMic(on){const b=$('mic');b.classList.toggle('on',on);b.textContent=tr(on?'listening':'tapSpeak')}
+function stopListening(){if(rec){const r=rec;rec=null;try{r.abort()}catch(e){}}setMic(false)}
+function listen(){
+  if(!SR||!S||S.phase!=='answer')return;
+  stopListening();
+  const r=new SR();rec=r;
+  r.lang=recLang();r.interimResults=true;r.continuous=false;r.maxAlternatives=5;
+  r.onresult=e=>{
+    if(rec!==r)return;
+    let txt='',alts=[];
+    for(const res of e.results){txt+=res[0].transcript;if(res.isFinal)for(const a of res)alts.push(a.transcript)}
+    input.value=txt;
+    if(alts.length)submit(false,alts);
+  };
+  r.onerror=e=>{
+    if(e.error==='not-allowed'||e.error==='service-not-allowed')$('micMsg').textContent=tr('micBlockedPlay');
+    else if(e.error==='no-speech')$('micMsg').textContent=tr('notCaught');
+  };
+  r.onend=()=>{if(rec===r){rec=null;setMic(false)}};
+  try{r.start();setMic(true);$('micMsg').textContent=''}catch(e){}
+}
+$('mic').addEventListener('click',listen);
+
+/* ---------- microphone check ---------- */
+var permChecked=false,testRec=null;
+function showPerm(state){
+  $('micStatus').textContent=tr(state==='granted'?'micOn':state==='denied'?'micBlocked':'micPrompt');
+}
+function micPermCheck(){
+  if(!navigator.permissions||!navigator.permissions.query){showPerm('prompt');return}
+  navigator.permissions.query({name:'microphone'}).then(st=>{showPerm(st.state);st.onchange=()=>showPerm(st.state)}).catch(()=>showPerm('prompt'));
+}
+$('micTest').addEventListener('click',()=>{
+  const Rec=window.SpeechRecognition||window.webkitSpeechRecognition;if(!Rec)return;
+  const b=$('micTest'),m=$('micStatus');
+  if(testRec){try{testRec.abort()}catch(e){}testRec=null}
+  const r=new Rec();testRec=r;r.lang=recLang();r.interimResults=true;r.continuous=false;
+  let heard='';
+  r.onstart=()=>{b.textContent=tr('listening');b.classList.add('on');m.textContent=tr(engMode()?'micSay':spk('micSay'))};
+  r.onresult=e=>{heard='';for(const res of e.results)heard+=res[0].transcript;m.textContent=tr('micHearing',heard)};
+  r.onerror=e=>{
+    m.textContent=e.error==='not-allowed'||e.error==='service-not-allowed'?tr('micBlocked'):e.error==='no-speech'?tr('micNoSpeech'):e.error==='audio-capture'?tr('micNoDevice'):tr('micFail',e.error);
+  };
+  r.onend=()=>{b.textContent=tr('micTestBtn');b.classList.remove('on');if(testRec===r)testRec=null;if(heard)m.textContent=tr('micWorks',heard)};
+  try{r.start()}catch(e){m.textContent=tr('micStartFail')}
+});
+
+const EN={zero:0,oh:0,o:0,one:1,two:2,three:3,four:4,five:5,six:6,seven:7,eight:8,nine:9,ten:10,eleven:11,twelve:12,thirteen:13,fourteen:14,fifteen:15,sixteen:16,seventeen:17,eighteen:18,nineteen:19,twenty:20,thirty:30,forty:40,fourty:40,fifty:50,sixty:60,seventy:70,eighty:80,ninety:90,first:1,second:2,third:3,fourth:4,fifth:5,sixth:6,seventh:7,eighth:8,ninth:9,tenth:10,eleventh:11,twelfth:12,thirteenth:13,fourteenth:14,fifteenth:15,sixteenth:16,seventeenth:17,eighteenth:18,nineteenth:19,twentieth:20,thirtieth:30};
+const MULT={hundred:100,thousand:1000,million:1e6};
+function wordsToDigits(text){
+  text=text.toLowerCase().replace(/\b(double|triple) (\S+)/g,(m,k,w)=>(w+' ').repeat(k==='double'?2:3).trim());  // British phone numbers: "double seven" → seven seven
+  const toks=text.replace(/(\d),(?=\d{3}\b)/g,'$1').replace(/[$€£]/g,' ').replace(/-/g,' ').split(/\s+/).filter(Boolean)
+    .map(t=>({t:t.replace(/[.,!?;:]+$/,'').replace(/^(\d+)(st|nd|rd|th)$/,'$1'),end:/[,;:!?]$|^\d+(st|nd|rd|th)[.,]?$|(first|second|third|th)[.,]?$/.test(t)}));
+  const out=[];let run=null,ch=null,prev=null;
+  const closeChunk=()=>{if(ch){run.push(String(ch.total+ch.cur));ch=null}};
+  const closeRun=()=>{closeChunk();if(run){out.push(run);run=null}};
+  for(let i=0;i<toks.length;i++){
+    let t=toks[i].t;const end=toks[i].end;
+    if(t==='a'&&MULT[(toks[i+1]||{}).t])t='one';
+    if(end&&(/^\d+$/.test(t)||t in EN)){
+      if(/^\d+$/.test(t)){if(!run)run=[];closeChunk();run.push(t)}
+      else{if(!run)run=[];if(ch&&(prev==='unit'||prev==='teen'||(prev==='tens'&&EN[t]>=10)))closeChunk();if(!ch)ch={total:0,cur:0};ch.cur+=EN[t]}
+      closeRun();prev=null;continue;
+    }
+    if(/^\d$/.test(t)&&ch&&prev==='tens'){ch.cur+=+t;prev='unit';continue}  // "seventy 2" / "שבעים ו-2" → 72
+    if(/^\d+(\.\d+)?$/.test(t)){if(!run)run=[];closeChunk();run.push(t);prev='digit';continue}
+    if(t in EN){
+      const v=EN[t];if(!run)run=[];
+      if(ch&&(prev==='unit'||prev==='teen'||(prev==='tens'&&v>=10)))closeChunk();
+      if(v===0){closeChunk();run.push('0');prev='zero';continue}
+      if(!ch)ch={total:0,cur:0};
+      ch.cur+=v;prev=v<10?'unit':v<20?'teen':'tens';continue;
+    }
+    if(t in MULT&&ch){if(MULT[t]===100)ch.cur*=100;else{ch.total+=ch.cur*MULT[t];ch.cur=0}prev='mult';continue}
+    if(t==='and'&&ch&&prev==='mult')continue;
+    if(t==='point'&&run){closeChunk();run.push('.');prev='point';continue}
+    closeRun();out.push(t);prev=null;
+  }
+  closeRun();
+  return out;
+}
+/* Hebrew number words become the English words wordsToDigits already reads: "אלף שש מאות שמונים וחמש" → "one thousand six hundred eighty five" */
+const HE_NUM={'אפס':'zero','אחת':'one','אחד':'one','שתיים':'two','שתים':'two','שניים':'two','שנים':'two','שני':'two','שתי':'two','שלוש':'three','שלושה':'three','שלושת':'three','ארבע':'four','ארבעה':'four','ארבעת':'four','חמש':'five','חמישה':'five','חמשה':'five','חמשת':'five','שש':'six','שישה':'six','ששה':'six','ששת':'six','שבע':'seven','שבעה':'seven','שבעת':'seven','שמונה':'eight','שמונת':'eight','תשע':'nine','תשעה':'nine','תשעת':'nine','עשר':'ten','עשרה':'ten','עשרת':'ten','עשרים':'twenty','שלושים':'thirty','ארבעים':'forty','חמישים':'fifty','שישים':'sixty','ששים':'sixty','שבעים':'seventy','שמונים':'eighty','תשעים':'ninety','מאה':'one hundred','מאות':'hundred','מאתיים':'two hundred','אלף':'one thousand','אלפים':'thousand','אלפיים':'two thousand','מיליון':'one million','מיליונים':'million','ראשון':'first','ראשונה':'first'};
+const UNITS=['one','two','three','four','five','six','seven','eight','nine'],TEENS=['eleven','twelve','thirteen','fourteen','fifteen','sixteen','seventeen','eighteen','nineteen'];
+function heToEn(text){
+  const out=[];let prevNum=false;
+  for(const tok of text.replace(/-/g,' ').split(/\s+/).filter(Boolean)){
+    const t=tok.replace(/[.,!?;:]+$/,'');let w=HE_NUM[t]||HE_NUM[t.replace(/^(וה|ו|ה)/,'')];
+    if(!w){if(t!=='ו')out.push(tok);prevNum=false;continue}
+    const last=out.length-1;
+    if(w==='ten'&&prevNum&&UNITS.includes(out[last])){out[last]=TEENS[UNITS.indexOf(out[last])];continue}  // שלוש עשרה → thirteen
+    if(prevNum&&/^one (thousand|million)$/.test(w))w=w.slice(4);  // שלושה עשר אלף → thirteen thousand
+    out.push(w);prevNum=true;
+  }
+  return out.join(' ');
+}
+/* French number words, the same way: "mille neuf cent quatre-vingt-dix-neuf" → "one thousand nine hundred ninety nine" */
+const FR_NUM={zero:'zero',un:'one',une:'one',deux:'two',trois:'three',quatre:'four',cinq:'five',six:'six',sept:'seven',huit:'eight',neuf:'nine',dix:'ten',onze:'eleven',douze:'twelve',treize:'thirteen',quatorze:'fourteen',quinze:'fifteen',seize:'sixteen',dixsept:'seventeen',dixhuit:'eighteen',dixneuf:'nineteen',vingt:'twenty',vingts:'twenty',trente:'thirty',quarante:'forty',cinquante:'fifty',soixante:'sixty',quatrevingt:'eighty',million:'million',millions:'million',premier:'first'};
+const FR_TEEN={dix:'',onze:'un',douze:'deux',treize:'trois',quatorze:'quatre',quinze:'cinq',seize:'six',dixsept:'sept',dixhuit:'huit',dixneuf:'neuf'};
+function frToEn(text){
+  const s=plain(text).replace(/-/g,' ').replace(/\bquatre vingts?\b/g,'quatrevingt').replace(/\bdix (sept|huit|neuf)\b/g,'dix$1')
+    .replace(/\b(soixante|quatrevingt)( et)? (dix|onze|douze|treize|quatorze|quinze|seize|dixsept|dixhuit|dixneuf)\b/g,(m,t,e,x)=>(t==='soixante'?'seventy ':'ninety ')+FR_TEEN[x]);  // soixante-douze → seventy deux
+  const out=[];
+  for(const tok of s.split(/\s+/).filter(Boolean)){
+    const t=tok.replace(/[.,!?;:]+$/,''),p=out[out.length-1],afterNum=p in EN&&p!=='zero';
+    if(t==='et')continue;
+    if(t==='cent'||t==='cents'){if(!afterNum)out.push('one','hundred');else if(EN[p]<10)out.push('hundred');else out.push(tok);continue}  // six cents → six hundred, cent → one hundred, cinquante cents → 50 (currency)
+    if(t==='mille'){afterNum||p==='hundred'?out.push('thousand'):out.push('one','thousand');continue}
+    out.push(FR_NUM[t]||tok);
+  }
+  return out.join(' ');
+}
+/* Ukrainian number words, the same way: "тисяча сімсот вісімдесят дев'ятого" → "one thousand seven hundred eighty nine".
+   Ordinals (dates: "чотирнадцяте липня", "...дев'ятого року") read as plain numbers; the month or "року" after them ends the number. Apostrophes are dropped from the keys. */
+const UK_NUM={нуль:'zero',один:'one',одна:'one',одне:'one',одну:'one',два:'two',дві:'two',три:'three',чотири:'four',пять:'five',шість:'six',сім:'seven',вісім:'eight',девять:'nine',десять:'ten',одинадцять:'eleven',дванадцять:'twelve',тринадцять:'thirteen',чотирнадцять:'fourteen',пятнадцять:'fifteen',шістнадцять:'sixteen',сімнадцять:'seventeen',вісімнадцять:'eighteen',девятнадцять:'nineteen',двадцять:'twenty',тридцять:'thirty',сорок:'forty',пятдесят:'fifty',шістдесят:'sixty',сімдесят:'seventy',вісімдесят:'eighty',девяносто:'ninety',сто:'one hundred',двісті:'two hundred',триста:'three hundred',чотириста:'four hundred',пятсот:'five hundred',шістсот:'six hundred',сімсот:'seven hundred',вісімсот:'eight hundred',девятсот:'nine hundred'};
+const UK_ORD={перш:'one',друг:'two',трет:'three',четверт:'four',пят:'five',шост:'six',сьом:'seven',восьм:'eight',девят:'nine',десят:'ten',одинадцят:'eleven',дванадцят:'twelve',тринадцят:'thirteen',чотирнадцят:'fourteen',пятнадцят:'fifteen',шістнадцят:'sixteen',сімнадцят:'seventeen',вісімнадцят:'eighteen',девятнадцят:'nineteen',двадцят:'twenty',тридцят:'thirty',сороков:'forty',пятдесят:'fifty',шістдесят:'sixty',сімдесят:'seventy',вісімдесят:'eighty',девяност:'ninety',сот:'one hundred',двохсот:'two hundred',трьохсот:'three hundred',чотирьохсот:'four hundred',пятисот:'five hundred',шестисот:'six hundred',семисот:'seven hundred',сьомисот:'seven hundred',восьмисот:'eight hundred',девятисот:'nine hundred',тисячн:'one thousand',двохтисячн:'two thousand'};
+const UK_ORD_RE=new RegExp('^('+Object.keys(UK_ORD).join('|')+')(ий|ій|ого|ього|ому|ьому|е|є|а|я|ої|ьої|у|ю|им|ім|их|іх|і)$');
+function ukToEn(text){
+  const out=[];
+  for(const tok of text.replace(/-/g,' ').split(/\s+/).filter(Boolean)){
+    const t=tok.toLowerCase().replace(/[.,!?;:]+$/,'').replace(/['’ʼ`]/g,''),o=t.match(UK_ORD_RE),p=out[out.length-1];
+    let w=UK_NUM[t]||(o&&UK_ORD[o[1]]);
+    if(/^(тисяч[аі]?|мільйон(и|ів)?)$/.test(t))w=(p in EN||p==='hundred'?'':'one ')+(t[0]==='т'?'thousand':'million');  // дві тисячі → two thousand, тисяча → one thousand
+    if(w)out.push(...w.split(' '));else out.push(tok);
+  }
+  return out.join(' ');
+}
+function candidates(raw){
+  // English answers need no rewrite; French only when the learner speaks French (frToEn would read English "cents" as hundreds)
+  const out=wordsToDigits(engMode()?raw:heToEn(ukToEn(val('spoken')==='fr'?frToEn(raw):raw)));
+  const A=out.map(x=>typeof x==='string'?x:x.join('')).join(' ');
+  const B=out.map(x=>{if(typeof x==='string')return x;const r=x.filter(p=>p!=='.');return r.length===2?r[0]+'.'+r[1].padStart(2,'0'):x.join('')}).join(' ');
+  const nums=A.match(/\d+(\.\d+)?/g)||[];
+  const C=nums.length===2&&!nums[0].includes('.')&&!nums[1].includes('.')?nums[0]+'.'+nums[1].padStart(2,'0'):A;
+  return [raw,A,B,C];
+}
+
+function finish(){
+  stopListening();clearTimeout(S.timer);S.phase='done';sid++;SS&&SS.cancel();
+  const n=S.results.length,good=S.results.filter(r=>r.ok);
+  $('sScore').textContent=grp(S.score);
+  $('sAcc').textContent=Math.round(good.length/n*100)+'%';
+  $('sAvg').textContent=good.length?(good.reduce((a,r)=>a+r.t,0)/good.length).toFixed(1):'–';
+  let bestTxt='';
+  if(S.mode!=='misses'&&n===S.items.length){
+    const key=`best:${S.mode}:${n}`,b=+store.get(key)||0;
+    const m=tr('m_'+S.mode);
+    if(S.score>b){store.set(key,S.score);bestTxt=b?tr('newBest',m,b):tr('firstBest',m)}
+    else bestTxt=tr('yourBest',m,b);
+  }
+  $('sBest').textContent=bestTxt;
+  $('list').innerHTML=S.results.map(r=>`<li><span class="mark ${r.ok?'ok':'bad'}">${r.ok?'✓':'✗'}</span><span class="d">${r.it.display}${!r.ok&&r.v?` <span class="y">(${r.v.replace(/</g,'&lt;')})</span>`:''}</span><span class="t">${r.ok?r.t.toFixed(1)+' '+tr('sec'):''}</span><span class="w" lang="en">${r.it.words}</span></li>`).join('');
+  $('misses').hidden=good.length===n;
+  show('done');onSettings();
+}
+function newRound(){
+  const mode=val('mode'),len=+val('len');
+  startRound(Array.from({length:len},()=>MODES[mode].make()),mode);
+}
+$('start').addEventListener('click',newRound);
+$('gear').addEventListener('click',()=>show('prefs'));
+$('prefsDone').addEventListener('click',()=>show('setup'));
+$('again').addEventListener('click',()=>{if(S.mode==='misses')newRound();else{setVal('mode',S.mode);newRound()}});
+$('misses').addEventListener('click',()=>{const m=shuffle(S.results.filter(r=>!r.ok).map(r=>r.it));startRound(m,'misses')});
+$('settings').addEventListener('click',()=>show('setup'));
+</script>
+</body>
+</html>
